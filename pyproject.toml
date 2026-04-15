@@ -8,7 +8,7 @@ dependencies = [
 	"ipykernel>=7.2.0",
 	"jupyterhub",
 	"jupyter-server-proxy>=4.4.0",
-	"ldaca-web-app[ldaca,deploy]",
+	"ldaca-web-app[deploy]",
 	"torch",
 ]
 
