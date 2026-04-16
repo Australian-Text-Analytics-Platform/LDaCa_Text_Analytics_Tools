@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+UV_PROJECT_ENVIRONMENT=/srv/conda/envs/notebook uv sync --locked --no-dev
+
+rm -rf \
+	"$HOME/.cache/uv" \
+	"$HOME/.cache/pip"
+
+find . \( \
+	-name '__pycache__' -o \
+	-name '.pytest_cache' -o \
+	-name '.ruff_cache' -o \
+	-name '.mypy_cache' \
+\) -prune -exec rm -rf {} +
+
+conda clean -afy || true

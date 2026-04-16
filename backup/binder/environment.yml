@@ -2,7 +2,6 @@ name: ldaca-binder
 channels:
   - conda-forge
 dependencies:
-  - python=3.14
   - pip
   - pip:
       - uv

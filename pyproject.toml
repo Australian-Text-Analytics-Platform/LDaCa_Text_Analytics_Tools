@@ -4,17 +4,9 @@ version = "0.1.0"
 description = "Binder wrapper for the LDaCA web application"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = [
-	"ipykernel>=7.2.0",
-	"jupyterhub",
-	"jupyter-server-proxy>=4.4.0",
-	"ldaca-loader",
-	"ldaca-web-app-backend>=0.2.0",
-	"torch",
-]
+dependencies = ["ldaca-web-app[deploy]", "torch"]
 
 [tool.uv.sources]
-ldaca-loader = { git = "https://github.com/Australian-Text-Analytics-Platform/ldaca-tabulator", branch = "ldaca_web_app_integration" }
 torch = { index = "pytorch-cpu" }
 
 [[tool.uv.index]]
