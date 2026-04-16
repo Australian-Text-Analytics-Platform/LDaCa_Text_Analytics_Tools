@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+UV_PROJECT_ENVIRONMENT=/srv/conda/envs/notebook uv sync --locked --no-dev

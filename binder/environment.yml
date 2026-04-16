@@ -1,0 +1,7 @@
+name: ldaca-binder
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - pip:
+      - uv
