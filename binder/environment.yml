@@ -6,3 +6,5 @@ dependencies:
   - pip
   - pip:
       - uv
+      - jupyter_server_proxy
+      - ldaca-web-app==0.1.20
