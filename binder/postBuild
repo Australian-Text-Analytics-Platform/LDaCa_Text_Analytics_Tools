@@ -3,48 +3,4 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-<<<<<<< HEAD
-pip install uv
-
-# Install backend workspace dependencies from the pinned lockfile
-# into Binder's existing conda environment.
-pushd ldaca_web_app/backend
-UV_PROJECT_ENVIRONMENT=/srv/conda/envs/notebook uv sync --frozen --no-dev
-popd
-
-# Prefetch the Sentence-Transformers model used by BERTopic by default.
-# BERTopic defaults to "sentence-transformers/all-MiniLM-L6-v2" when no embedding_model is specified.
-# Download into the jovyan cache so runtime does not require network access.
-export HF_HOME=${HF_HOME:-/home/jovyan/.cache/huggingface}
-export TRANSFORMERS_CACHE=${TRANSFORMERS_CACHE:-$HF_HOME/transformers}
-export HF_DATASETS_CACHE=${HF_DATASETS_CACHE:-$HF_HOME/datasets}
-export SENTENCE_TRANSFORMERS_HOME=${SENTENCE_TRANSFORMERS_HOME:-$HF_HOME/sentence_transformers}
-mkdir -p "$TRANSFORMERS_CACHE" "$HF_DATASETS_CACHE" "$SENTENCE_TRANSFORMERS_HOME"
-
-python - <<'PY'
-import os
-try:
-  from sentence_transformers import SentenceTransformer
-except Exception as e:
-  print(f"[postBuild] sentence-transformers not available yet: {e}")
-else:
-  cache = os.environ.get("SENTENCE_TRANSFORMERS_HOME") or None
-  print(f"[postBuild] Prefetching 'sentence-transformers/all-MiniLM-L6-v2' -> {cache}")
-  SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2", cache_folder=cache)
-  print("[postBuild] Model prefetched.")
-
-try:
-  import nltk
-  nltk.download("stopwords")
-  nltk.download("punkt")
-  nltk.download("punkt_tab")
-except Exception as e:
-  pass
-PY
-
-pushd ldaca_web_app/frontend
-npm install
-npm run build
-=======
 # UV_PROJECT_ENVIRONMENT=/srv/conda/envs/notebook uv sync --locked --no-dev
->>>>>>> dev
