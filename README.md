@@ -1,5 +1,6 @@
-# LDaCA - Language Data Commons of Australia
+# LDaCA Binder
 
+<<<<<<< HEAD
 LDaCA is a modular, end-to-end text analytics ecosystem: a Polars-powered Python library for large-scale document processing (`docframe`), a composable workspace graph layer (`docworkspace`), and a FastAPI + React web application for interactive exploration. The platform focuses on lazy, reproducible text pipelines, workspace serialisation, and zero-copy transitions from backend processing to frontend visualisation.
 
 ## Installation
@@ -115,12 +116,28 @@ GEMINI_API_KEY=...
 ```
 
 For local models, ensure Ollama is running at the configured endpoint (default: http://127.0.0.1:11434).
+=======
+This repository is the Binder wrapper for the LDaCA web application. It opens the `ldaca_web_app` repository directly in Binder without building a Docker image.
+>>>>>>> dev
 
-## Documents
+## Repository layout
 
-- Web App Tutorial: See `ldaca_web_app/tutorial.md` for a beginner-friendly walkthrough of all features.
+- `binder/` contains the repo2docker environment and post-build setup.
+- `ldaca_web_app/` is the application submodule (used only for local development; Binder installs from PyPI).
+- `ldaca_web_app_launch.ipynb` is the Binder notebook entry point.
+- `utils.py` provides Binder-specific helpers (JupyterHub proxy URL detection).
 
-## Launch Online App
+## Binder launch
 
+<<<<<<< HEAD
 - BinderHub Demo:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCA-Text-Analytics-Tools/main?labpath=LDaCa_Analysis.ipynb)
+=======
+[![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/ldaca_web_app_binder/main?labpath=ldaca_web_app_launch.ipynb)
+
+## Local development
+
+```bash
+uv sync
+```
+>>>>>>> dev

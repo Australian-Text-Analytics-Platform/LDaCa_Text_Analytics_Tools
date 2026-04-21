@@ -2,6 +2,3 @@
 	path = ldaca_web_app
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app.git
 	branch = main
-[submodule "ai_annotator"]
-	path = ai_annotator
-	url = https://github.com/Australian-Text-Analytics-Platform/ai-annotator.git

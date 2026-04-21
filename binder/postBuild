@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Ensure we are in repo root
 cd "$(dirname "$0")/.."
 
+<<<<<<< HEAD
 pip install uv
 
 # Install backend workspace dependencies from the pinned lockfile
@@ -45,3 +45,6 @@ PY
 pushd ldaca_web_app/frontend
 npm install
 npm run build
+=======
+# UV_PROJECT_ENVIRONMENT=/srv/conda/envs/notebook uv sync --locked --no-dev
+>>>>>>> dev

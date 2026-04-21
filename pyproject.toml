@@ -1,22 +1,15 @@
 [project]
-name = "ldaca"
+name = "ldaca-web-app-binder"
 version = "0.1.0"
-description = "LDaCA - Language Data Commons of Australia ecosystem for text analysis"
+description = "Binder wrapper for the LDaCA web application"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "docframe",
-    "ldaca-web-app-backend",
-]
-
-[tool.uv.workspace]
-members = [
-    "docframe",
-    "ldaca_web_app/docworkspace", 
-    "ldaca_web_app/backend"
-]
+requires-python = ">=3.14"
+dependencies = ["ldaca-web-app[deploy]", "torch"]
 
 [tool.uv.sources]
-docframe = { workspace = true }
-docworkspace = { workspace = true }
-ldaca-web-app-backend = { workspace = true }
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
