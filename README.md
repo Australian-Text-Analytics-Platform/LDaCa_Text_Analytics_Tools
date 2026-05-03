@@ -9,16 +9,16 @@ versioned setup.
 ## Latest
 
 - Published (AEST): 2026-05-03
-- Package: `ldaca-web-app@0.2.3`
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/2dcc8aa79e53de89584d08826c2dea8f76677b3e?labpath=index.ipynb)
-- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.3/LDaCA.Text.Analytics_0.2.2_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.3/ldaca-desktop-apple-silicon.dmg)
-- Run locally: `uvx --refresh ldaca-web-app@0.2.3`
+- Package: `ldaca-web-app@0.2.5`
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/d91f5fde7ff75514336daed7621a5a5d0df817d1?labpath=index.ipynb)
+- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.5/LDaCA.Text.Analytics_0.2.5_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.5/ldaca-desktop-apple-silicon-0.2.5.dmg)
+- Run locally: `uvx --refresh ldaca-web-app@0.2.5`
 
 ## Release History
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
-| 2026-05-03 | `0.2.3` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/2dcc8aa79e53de89584d08826c2dea8f76677b3e?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.3/LDaCA.Text.Analytics_0.2.2_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.3/ldaca-desktop-apple-silicon.dmg) | `uvx --refresh ldaca-web-app@0.2.3` |
+| 2026-05-03 | `0.2.5` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/d91f5fde7ff75514336daed7621a5a5d0df817d1?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.5/LDaCA.Text.Analytics_0.2.5_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.5/ldaca-desktop-apple-silicon-0.2.5.dmg) | `uvx --refresh ldaca-web-app@0.2.5` |
 | 2026-05-03 | `0.2.2` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/8427a10ec8607cf3087d341b871cb64d4ab64dd2?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.2/LDaCA.Text.Analytics_0.2.2_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app/releases/download/v0.2.2/ldaca-desktop-apple-silicon.dmg) | `uvx --refresh ldaca-web-app@0.2.2` |
 
 ## Local development
