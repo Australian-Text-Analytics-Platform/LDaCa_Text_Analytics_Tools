@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Binder wrapper for the LDaCA web application"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["ldaca-web-app[deploy]", "torch"]
+dependencies = ["ldaca-web-app[deploy]>=0.4.1", "torch"]
 
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
