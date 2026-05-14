@@ -1,7 +1,7 @@
 [submodule "ldaca_web_app"]
 	path = ldaca_web_app
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app.git
-	branch = main
+	branch = v0.4
 [submodule "ldaca-analytics-docs"]
 	path = ldaca-analytics-docs
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-docs.git
