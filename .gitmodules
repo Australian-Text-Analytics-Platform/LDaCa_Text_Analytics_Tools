@@ -5,6 +5,7 @@
 [submodule "ldaca-analytics-docs"]
 	path = ldaca-analytics-docs
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-docs.git
+	branch = v0.4
 [submodule "ldaca-analytics-sample-data"]
 	path = ldaca-analytics-sample-data
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-sample-data.git
