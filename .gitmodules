@@ -1,11 +1,12 @@
-[submodule "ldaca_web_app"]
-	path = ldaca_web_app
-	url = https://github.com/Australian-Text-Analytics-Platform/ldaca_web_app.git
+[submodule "ldaca_wordflow"]
+	path = ldaca_wordflow
+	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow.git
 	branch = v0.4
-[submodule "ldaca-analytics-docs"]
-	path = ldaca-analytics-docs
-	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-docs.git
+[submodule "ldaca_wordflow_docs"]
+	path = ldaca_wordflow_docs
+	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow-docs.git
 	branch = v0.4
 [submodule "ldaca-analytics-sample-data"]
 	path = ldaca-analytics-sample-data
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-sample-data.git
+	branch = main
