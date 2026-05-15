@@ -1,16 +1,18 @@
 # Handover — what changed since 2026-04-25
 
-For Alex (Senhui Guo) and his coding agent, on return from leave. This summarises the substantive work landed in the LDaCA text-analytics tools between Alex's last commit (parent `4087f05`, 2026-04-25) and the master-repo migration (today, 2026-05-15). The intent is to bridge the gap quickly — read this once, then trust the per-repo `AGENTS.md` files for working conventions.
+For Alex (Senhui Guo) and his coding agent, on return from leave. This summarises the substantive work landed in the LDaCA text-analytics tools between Alex's last commit (parent `4087f05`, 2026-04-25) and the v0.4.2 Wordflow-rename release (2026-05-15). The intent is to bridge the gap quickly — read this once, then trust the per-repo `AGENTS.md` files for working conventions.
 
-> **Volume note.** ~415 commits across `ldaca_web_app` plus heavy work in `backend/`, `docworkspace/`, and `polars-text/`. This doc covers the load-bearing changes, not every fix. For full detail, the per-version `CHANGELOG.md` entries (currently 0.2.6 through 0.4.1) are the user-facing record; `git log v<prev>..v<next>` is the engineering record.
+> **Rename note (2026-05-15).** Between v0.4.1 and v0.4.2 the web app was renamed: PyPI `ldaca-web-app` → `ldaca-wordflow`, Python module + GitHub repo slug flipped the same way, Tauri productName changed to "LDaCA Wordflow", and the backend submodule's repo slug went `ldaca_web_app_backend` → `ldaca-wordflow-backend`. The master directories also flipped: `ldaca_web_app/` → `ldaca_wordflow/`, `ldaca-analytics-docs/` → `ldaca_wordflow_docs/`. Old GitHub URLs auto-redirect; old PyPI installs still work via the `ldaca-web-app==0.4.2` one-shot legacy shim that depends on `ldaca-wordflow==0.4.2`. From 0.5+ only `ldaca-wordflow` ships.
+
+> **Volume note.** ~415 commits across the Wordflow repo plus heavy work in `backend/`, `docworkspace/`, and `polars-text/`. This doc covers the load-bearing changes, not every fix. For full detail, the per-version `CHANGELOG.md` entries (currently 0.2.6 through 0.4.2) are the user-facing record; `git log v<prev>..v<next>` is the engineering record.
 
 ## TL;DR
 
-1. **New active release line `v0.4` (multilingual)** — `main` is parked at v0.3.5; production now lives on the `v0.4` branch of `ldaca_web_app` and its docs counterpart. PyPI's `latest` is `0.4.1`.
+1. **New active release line `v0.4` (multilingual + rename)** — `main` is parked at v0.3.5 (legacy `ldaca-web-app` only); production now lives on the `v0.4` branch of `ldaca-wordflow` (formerly `ldaca_web_app`) and `ldaca-wordflow-docs` (formerly `ldaca-analytics-docs`). PyPI's `latest` is `ldaca-wordflow==0.4.2`.
 2. **Multilingual support shipped end-to-end** — Japanese, Korean, Chinese (Simplified/Traditional), Vietnamese, and the major European languages now flow through concordance, token frequency, topic modelling, and AI annotation with language-appropriate tokenisation + stopwords.
-3. **Docs + sample data became sibling repos** — `frontend/src/docs/*` was extracted into `ldaca-analytics-docs` (runtime-fetched at view time via a docs registry with bundled fallback). Sample datasets moved to `ldaca-analytics-sample-data` and are downloaded on demand.
-4. **Major submodule version bumps:** `backend` v0.1.26 → v0.4.1, `docworkspace` v0.2.5 → v0.2.8, `polars-text` v0.1.4 → v0.2.0.
-5. **The master repo (this one) is being promoted** to the primary working root so agent sessions can make atomic cross-repo commits — see [AGENTS.md](AGENTS.md) and [MIGRATION_PLAN.md](MIGRATION_PLAN.md).
+3. **Docs + sample data became sibling repos** — `frontend/src/docs/*` was extracted into `ldaca-wordflow-docs` (runtime-fetched at view time via a docs registry with bundled fallback). Sample datasets moved to `ldaca-analytics-sample-data` and are downloaded on demand.
+4. **Major submodule version bumps:** `backend` v0.1.26 → v0.4.2, `docworkspace` v0.2.5 → v0.2.8, `polars-text` v0.1.4 → v0.2.0.
+5. **Wordflow-rename gotcha to remember.** When the backend GH repo was renamed, the PyPI Trusted Publisher OIDC step failed with `invalid-publisher` until a new trusted-publisher record was added on pypi.org/manage/project/ldaca-wordflow/settings/publishing pointing at `Australian-Text-Analytics-Platform/ldaca-wordflow-backend` + `release.yml`. Future repo renames need the same pre-tag step.
 
 ## Submodule version moves
 
@@ -27,11 +29,11 @@ For Alex (Senhui Guo) and his coding agent, on return from leave. This summarise
 
 ### 1. Docs moved out of the web app
 
-Before: tutorials and reference pages lived under `ldaca_web_app/frontend/src/docs/` and were bundled into the JS app. Updating a tutorial required a frontend rebuild + release.
+Before: tutorials and reference pages lived under `ldaca_wordflow/frontend/src/docs/` and were bundled into the JS app. Updating a tutorial required a frontend rebuild + release.
 
-After: docs live in [`ldaca-analytics-docs`](https://github.com/Australian-Text-Analytics-Platform/ldaca-analytics-docs) with version branches mirroring the web app (`v0.3`, `v0.4`). The web app fetches them at runtime via a **docs registry** with a stale-while-revalidate cache and a bundled-fallback path — so users see the latest tutorial without redeploying the app, and offline users still get the bundled version. The registry also drives an end-of-life banner when a docs version is past its support window.
+After: docs live in [`ldaca-wordflow-docs`](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow-docs) (renamed from `ldaca-analytics-docs` at v0.4.2) with version branches mirroring the web app (`v0.3`, `v0.4`). The web app fetches them at runtime via a **docs registry** with a stale-while-revalidate cache and a bundled-fallback path — so users see the latest tutorial without redeploying the app, and offline users still get the bundled version. The registry also drives an end-of-life banner when a docs version is past its support window.
 
-Frontend env var: `VITE_DOCS_BASE_URL=https://australian-text-analytics-platform.github.io/ldaca-analytics-docs/v0.4` (set in `frontend/.env`, committed). Updated per minor version, not per patch.
+Frontend env var: `VITE_DOCS_BASE_URL=https://australian-text-analytics-platform.github.io/ldaca-wordflow-docs/v0.4` (set in `frontend/.env`, committed). Updated per minor version, not per patch.
 
 ### 2. Sample data moved to its own repo
 
@@ -79,7 +81,7 @@ Design doc: `frontend/docs/developer-guide/node-colour-strategy.md`. **Phase D**
 - **Stop button** that cancels via SIGTERM (new `/tasks/cancel` endpoint).
 - **Online pipeline** (IncrementalPCA + MiniBatchKMeans) via `force_mode="online"` for memory-bound corpora.
 - **Post-fit stopword filter** + **Words-per-topic slider** scaling up to `max(50, 2×setting)`.
-- **Detach exports renamed topic words** via `topic_meanings_override` (with per-corpus filtering on the v0.4 line — semantic difference vs main, see `backend/src/ldaca_web_app/api/workspaces/analyses/topic_modeling.py`).
+- **Detach exports renamed topic words** via `topic_meanings_override` (with per-corpus filtering on the v0.4 line — semantic difference vs main, see `backend/src/ldaca_wordflow/api/workspaces/analyses/topic_modeling.py`).
 - **Embedder revision pinning** to a specific HuggingFace revision (was tracking `main` implicitly). Optional `scripts/check_model_updates.py` for guided revision bumps.
 - **MPS prefetch optimisation** — probe HuggingFace cache locally first, skip network HEAD when cached.
 
@@ -144,7 +146,7 @@ The web app's `backend/pyproject.toml` carried `[tool.uv.sources] docworkspace =
 **Lesson**: path-source overrides mask drift in local builds but not in published wheels. Before any release with a path source active, either bump+republish the dep or remove the override and verify the PyPI-resolved install. Validation command:
 
 ```bash
-uvx --refresh --from ldaca-web-app==<version> python -c \
+uvx --refresh --from ldaca-wordflow==<version> python -c \
   "from importlib.metadata import version; print(version('docworkspace'))"
 ```
 
@@ -182,7 +184,7 @@ Verification: `grep -c '"?X\.Y\.Z"?'` on the unpacked bundle; expect hits in `Do
 
 ## Open follow-ups
 
-- **Nectar VM deploy of v0.4.1** is pending (manual step). The VM currently runs the v0.3.5 line; switching it over is a `git checkout v0.4 && git submodule update --init --recursive --checkout --force && sudo systemctl restart ldaca-web-app` on the deploy host.
+- **Nectar VM deploy of v0.4.2** is pending (manual step). The VM currently runs the v0.3.5 line; switching it over is a `git checkout v0.4 && git submodule update --init --recursive --checkout --force && sudo systemctl restart ldaca-web-app` on the deploy host. The installed systemd unit is still `ldaca-web-app.service` (the back-compat console-script alias keeps it working); rename to `ldaca-wordflow.service` if/when you want to align with the package rename — that's a coordinated VM-side change, not a release-time edit.
 - **CILogon prod credentials** — awaiting Moises (ARDC/AAF). The `cilogon` config is in the test config; flip `CILOGON_DISCOVERY_URL` once prod credentials land.
 - **Pluggable-tokeniser PLAN.md** — Phase 5 is the last marked phase. If you have additional tokeniser dictionaries to host, follow the existing `SIH/lindera-dicts` pattern.
 - **`ai_annotator/` at the master root** appears empty — confirm and remove.
@@ -190,8 +192,8 @@ Verification: `grep -c '"?X\.Y\.Z"?'` on the unpacked bundle; expect hits in `Do
 ## Where the agent context lives
 
 - This master repo: [AGENTS.md](AGENTS.md), [MIGRATION_PLAN.md](MIGRATION_PLAN.md), this file.
-- Web app: `ldaca_web_app/AGENTS.md`, `ldaca_web_app/DEPLOY.md`.
-- Docs site: `ldaca-analytics-docs/` (its own README + branch-per-version layout).
+- Web app: `ldaca_wordflow/AGENTS.md`, `ldaca_wordflow/DEPLOY.md`.
+- Docs site: `ldaca_wordflow_docs/` (its own README + branch-per-version layout).
 - Sample data: `ldaca-analytics-sample-data/` (catalogue.json is the entry point).
 
 Saved memory under `~/.claude/projects/...` carries operational lessons (release cadence, verify-between-commits, polars-text feature gates, etc.) and should travel with whichever working folder the agent opens.
