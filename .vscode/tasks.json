@@ -1,0 +1,70 @@
+{
+    // Tasks for the master (LDaCA Text Analytics Tools) repo.
+    //
+    // The ``Start Wordflow`` task launches the backend + frontend together
+    // in parallel — one click via "Tasks: Run Task" → "Start Wordflow" (or
+    // bind it to a keyboard shortcut). The individual ``Start Backend`` /
+    // ``Start Frontend`` tasks are also kept exposed so they can be
+    // stopped / restarted independently from the Terminal tab.
+    //
+    // Run from whatever branch the ldaca_wordflow submodule is currently
+    // checked out on, so a ``git checkout`` in the submodule changes what
+    // these tasks actually launch.
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Backend",
+            "type": "shell",
+            "command": "uv run uvicorn ldaca_wordflow.main:app --reload --port 8001",
+            "options": {
+                "cwd": "${workspaceFolder}/ldaca_wordflow/backend",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/ldaca_wordflow/backend/src"
+                }
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "group": "wordflow",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Start Frontend",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/ldaca_wordflow/frontend"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "group": "wordflow",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "Start Wordflow",
+            "dependsOn": [
+                "Start Backend",
+                "Start Frontend"
+            ],
+            "dependsOrder": "parallel",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
