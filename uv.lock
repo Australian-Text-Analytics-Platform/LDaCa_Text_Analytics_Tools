@@ -1293,8 +1293,8 @@ wheels = [
 ]
 
 [[package]]
-name = "ldaca-web-app"
-version = "0.4.1"
+name = "ldaca-wordflow"
+version = "0.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
@@ -1318,9 +1318,9 @@ dependencies = [
     { name = "tokenizers" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/b9/9973a9543a595cd004cf1e879e8d8f6e3b87a00ed065d283a56310f13b23/ldaca_web_app-0.4.1.tar.gz", hash = "sha256:c9469b9f39aa73530b494681febb0bf2fe154324eb7aabce138c7d0fda01cd03", size = 28269762, upload-time = "2026-05-14T15:27:46.502Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c2/65/a12047ddf9d71efd9c3f47762b071a5ec0033a54898514b44413992477f9/ldaca_wordflow-0.4.2.tar.gz", hash = "sha256:d2fa3ee7ede8b5c9e7e546b2230fdf13ff65f42080b486f6e14b05bdfa0d0e7c", size = 28271571, upload-time = "2026-05-15T01:10:22.975Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/49/9e/2c9f33275153ca0b63cba213ebfdbf76d999cfc113b910ef68513e191032/ldaca_web_app-0.4.1-py3-none-any.whl", hash = "sha256:ad9c8d1390428c184a6be8bd81e0337a2be251c6c06b25439311ab9a7bf0dbf7", size = 28574511, upload-time = "2026-05-14T15:27:43.694Z" },
+    { url = "https://files.pythonhosted.org/packages/49/aa/354135b459a542ef5a65d7b9ed8177ce8a125cbb1ab0b52ac24c62514179/ldaca_wordflow-0.4.2-py3-none-any.whl", hash = "sha256:c55a7931af074a29a9d4041722fa309eac6fbc9325971b51e8fab6c15936665f", size = 28577807, upload-time = "2026-05-15T01:10:19.59Z" },
 ]
 
 [package.optional-dependencies]
@@ -1330,18 +1330,18 @@ deploy = [
 ]
 
 [[package]]
-name = "ldaca-web-app-binder"
+name = "ldaca-wordflow-binder"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "ldaca-web-app", extra = ["deploy"] },
+    { name = "ldaca-wordflow", extra = ["deploy"] },
     { name = "torch", version = "2.11.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'darwin'" },
     { name = "torch", version = "2.11.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform != 'darwin'" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ldaca-web-app", extras = ["deploy"], specifier = ">=0.4.1" },
+    { name = "ldaca-wordflow", extras = ["deploy"], specifier = ">=0.4.2" },
     { name = "torch", index = "https://download.pytorch.org/whl/cpu" },
 ]
 
