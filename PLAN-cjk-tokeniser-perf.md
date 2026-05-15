@@ -110,17 +110,21 @@ The cache is the structural fix for issue 2. It turns tokenisation from "an expr
 2. **Sharable across child blocks** with same / subset of rows.
 3. **Sweepable** when no live node references it.
 
-### Storage location
+### Storage location — per LDaCA user
 
 ```
-~/.cache/ldaca_wordflow/tokens/
-    {cache_key}.parquet         # token data
-    {cache_key}.manifest.json   # references + metadata
+{user_root}/user_cache/tokens/
+    {model}__{params_hash}.parquet   # token data
+    manifest.json                     # one per user
 ```
 
-Matches the existing `~/.cache/ldaca_wordflow/spacy/` convention from [`quotation_extractor.py:32`](ldaca_wordflow/backend/src/ldaca_wordflow/core/quotation_extractor.py#L32). Workspaces live at `~/Documents/ldaca/...` ([`settings.py:32`](ldaca_wordflow/backend/src/ldaca_wordflow/settings.py#L32)); workspace GC operates entirely within that tree, so `~/.cache/...` is untouched.
+Sibling of the existing `{user_root}/user_cache/embeddings/`, resolved via [`get_user_cache_folder(user_id)`](ldaca_wordflow/backend/src/ldaca_wordflow/core/utils.py#L73). User roots live at `~/Documents/ldaca/users/<id>/` ([`settings.py:32`](ldaca_wordflow/backend/src/ldaca_wordflow/settings.py#L32)); workspace GC walks only inside individual workspace folders, so the cache survives `clear_workspace_artifacts_dir` and even full workspace deletion (its references are dropped from the manifest, leaving the parquet for the sweep to reclaim after the grace period).
 
-Override via env var `LDACA_TOKENS_CACHE_DIR` for tests / Tauri sandboxing.
+Cross-user dedup is intentionally **not** a goal:
+- Real LDaCA installs are single-user Tauri desktops or per-researcher cloud accounts working on their own corpora, so the dedup benefit was theoretical.
+- Per-user scoping matches the existing `user_cache/` convention and gives privacy by construction — one user's document hashes never appear in another user's manifest.
+
+Override via env var `LDACA_TOKENS_CACHE_DIR` for tests / Tauri sandboxing. The override supplies the BASE; the per-user subdir (`{base}/{user_id}/tokens/`) is still applied so multi-user behaviour stays exercised under the override.
 
 ### Cache schema
 
@@ -205,23 +209,27 @@ Falls out for free. When a user filters / sorts / sub-selects the parent node, t
 
 The only edge case where sharing breaks is if a transformation modifies the source column's *content* (e.g. lower-casing it before tokenising). Such transforms should be marked "tokens-invalidating" on the Node side and trigger a re-derive — captured in `register_derived_column` metadata.
 
-### Manifest schema (`{cache_key}.manifest.json`)
+### Manifest schema (`{user_root}/user_cache/tokens/manifest.json`)
+
+One manifest **per user**; each tracks all cache files in that user's `tokens/` dir.
 
 ```json
 {
-  "model": "lindera-ja-ipadic",
-  "params": {"lowercase": false, "remove_punct": true},
-  "created_at": "2026-05-15T07:00:00Z",
-  "last_accessed": "2026-05-15T09:14:32Z",
-  "references": [
-    {"user_id": "u123", "workspace_id": "ws456", "node_id": "n789",
-     "source_column": "text", "derived_column": "__derived__.tokens.text.lindera-ja-ipadic",
-     "registered_at": "2026-05-15T07:00:00Z"}
-  ]
+  "version": 2,
+  "entries": {
+    "lindera-ja-ipadic__abcdef012345.parquet": {
+      "size_bytes": 123456,
+      "created_at": "2026-05-15T07:00:00Z",
+      "last_accessed_at": "2026-05-15T09:14:32Z",
+      "references": [
+        {"workspace_id": "ws456", "node_id": "n789"}
+      ]
+    }
+  }
 }
 ```
 
-References are added in `tokenise_column`, removed in `delete_derived_column` and on node / workspace deletion. The manifest is the source of truth for whether a cache file is live.
+References are added in `tokenise_column`, removed in `delete_derived_column` / `delete_node` / `delete_workspace`. The user owning the manifest is implicit in the directory path, so each reference only stores `(workspace_id, node_id)`. The manifest is the source of truth for whether a cache file is live.
 
 ### Sweep / GC
 
@@ -229,7 +237,7 @@ Three layers, increasing strength:
 
 1. **Per-reference removal** — surgical, synchronous. On `delete_derived_column`, `delete_node`, `delete_workspace`, walk the affected references and drop them from the manifest. If `references` is empty AND `last_accessed` is older than `LDACA_TOKENS_CACHE_TTL_DAYS` (default 7), delete both files in the same call. Keeps the cache responsive to user-driven cleanup.
 
-2. **Startup sweep** — defensive. On backend boot, walk `~/.cache/ldaca_wordflow/tokens/`, for each `*.manifest.json` verify each referenced `(user, workspace, node)` still exists. Drop stale references. Delete files whose `references` end up empty AND `last_accessed` is past the TTL. Catches references stranded by crashes or out-of-band workspace deletion.
+2. **Startup sweep** — defensive. On backend boot, walk every `{user_root}/user_cache/tokens/manifest.json` (one per user with a cache dir on disk); for each, verify each referenced `(workspace, node)` still exists. Drop stale references. Delete files whose `references` end up empty AND `last_accessed_at` is past the TTL. Catches references stranded by crashes or out-of-band workspace deletion. Returns `{user_id: [removed_filenames]}` so the boot log can record per-user reclamation.
 
 3. **Row-level compaction (deferred)** — not in MVP. If a cache parquet accumulates many rows from short-lived workspaces, a `lf.filter(__content_hash__.is_in(live_hashes)).sink_parquet(...)` rewrite can reclaim within-file space. Out of scope for this branch; revisit if cache parquets grow unmanageably.
 
