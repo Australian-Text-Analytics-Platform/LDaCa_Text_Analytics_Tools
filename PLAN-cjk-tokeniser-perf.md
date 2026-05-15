@@ -1,16 +1,18 @@
 # CJK Tokeniser Performance — Investigation & Fix Plan
 
-**Branch:** `perf/cjk-tokeniser` (created in `ldaca_wordflow`, `ldaca_wordflow/backend`, `ldaca_wordflow/polars-text`)
+**Branch:** `perf/cjk-tokeniser` (in `ldaca_wordflow`, `ldaca_wordflow/backend`, `ldaca_wordflow/polars-text`)
+**Base:** `v0.4` for `ldaca_wordflow` + `backend`; `multilingual` for `polars-text` (its release-line equivalent — `polars-text` has no `v0.4`).
 **Started:** 2026-05-15
-**Base:** `v0.4` (Wordflow + backend) / `multilingual` (polars-text)
 
 ## Symptom
 
-After the new CJK tokeniser (Jieba for zh, Lindera for ja/ko) was added in polars-text 0.2.0, the app became significantly slower and RAM consumption spiked, despite the LazyFrame architecture being intact.
+After Phase 5 of multilingual support (Jieba for Chinese, Lindera for Japanese/Korean) landed in `polars-text 0.2.0`, tokenised workspaces became dramatically slower and consumed much more RAM than the v0.3 (English-only) line — despite the lazy-frame architecture being intact.
 
-## Root causes (ordered by impact)
+Functional correctness is fine; the regression is purely performance.
 
-### 1. O(N²) byte→char offset conversion — JA/KO specific
+## Root causes (in priority order)
+
+### 1. `byte_to_char_idx` is O(N²) per document — the biggest offender
 
 [`polars-text/src/tokenizer.rs:141-143`](ldaca_wordflow/polars-text/src/tokenizer.rs#L141-L143):
 
@@ -20,167 +22,254 @@ fn byte_to_char_idx(text: &str, byte_idx: usize) -> usize {
 }
 ```
 
-Called twice per token from `tokenize_text_with_offsets` for the Lindera and HuggingFace branches. Each call re-walks `char_indices()` from byte 0 → token's byte offset. For an N-token document this is `Θ(N²·avg_token_chars)`. A 10 000-char Japanese article with ~5 000 morphemes ≈ 5×10⁷ char-iterations per document; over 10 000 docs ≈ 5×10¹¹ iterations.
+Called **twice per token** from the Lindera and HuggingFace arms of `tokenize_text_with_offsets`. Each call walks `char_indices()` from byte 0. For `N` tokens in a `C`-character document, total cost is `Θ(N·C)`.
 
-The Jieba (zh) branch uses `t.start` / `t.end` directly from `jieba_rs::TokenizeMode::Default` — already char offsets, so zh is fast. **Only JA/KO regress.**
+- Jieba (`zh`) is **unaffected** — its tokens come back with native char offsets (line 111), so the function is never called.
+- Lindera (`ja`, `ko`) and any HuggingFace model are pathologically slow because their tokens emit byte offsets.
 
-**Fix:** single forward sweep — accumulate char count by stepping through `char_indices()` once per document, and zip each Lindera/HF token's byte offsets against a running pointer. `O(C + N)`.
+A 10 000-char JA article with ~5 000 Lindera morphemes → ~50 million char-iterations **per row**. Over 10 000 rows the work approaches 10¹² iterations. This alone explains most of the regression.
 
-### 2. Unnecessary `to_lowercase()` for CJK
+**Fix:** single forward sweep. Lindera and HF both emit tokens in document order, so accumulate char position by stepping through `text.char_indices()` once per document, zipping token byte offsets against it as we go. Replaces `Θ(N·C)` with `Θ(C + N)`.
 
-[`polars-text/src/tokenizer.rs:44-48`](ldaca_wordflow/polars-text/src/tokenizer.rs#L44-L48) unconditionally allocates a fresh `String` and walks the entire text doing Unicode case folding when `lowercase=true`. The Python wrapper defaults `lowercase=True` and the backend never overrides it.
+### 2. Tokenisation re-runs on every collect (no materialisation)
 
-CJK has no case. For Chinese/Japanese/Korean every row pays a full alloc + Unicode lowercase walk that does nothing useful.
+[`backend/src/ldaca_wordflow/core/derived_columns.py:57-71`](ldaca_wordflow/backend/src/ldaca_wordflow/core/derived_columns.py#L57-L71) only appends the tokenise expression to the lazy plan. Each downstream `.collect()` re-executes the tokeniser. Hot paths:
 
-**Fix:** in [`backend/src/ldaca_wordflow/core/derived_columns.py`](ldaca_wordflow/backend/src/ldaca_wordflow/core/derived_columns.py), pass `lowercase=False` when the model is `jieba` / `lindera-*` (or when `language in {"zh","ja","ko"}`). Also add a defensive short-circuit in the Rust `tokenize_text_with_offsets` so passing `lowercase=true` with `model_id ∈ {jieba, lindera-*}` is a no-op.
+- Page-size estimator [`concordance_core.py:560-573`](ldaca_wordflow/backend/src/ldaca_wordflow/api/workspaces/analyses/concordance_core.py#L560-L573) probes the candidate ladder, triggering multiple tokenisation passes per concordance request.
+- Tokens-mode concordance [`concordance_tokens_mode.py:165-167`](ldaca_wordflow/backend/src/ldaca_wordflow/api/workspaces/analyses/concordance_tokens_mode.py#L165-L167) re-tokenises on every page navigation.
+- Token frequencies (see issue 3) materialises the full column eagerly.
 
-### 3. Per-row Series construction in the list builder
+`is_elementwise=True` plus a `.slice()` should keep per-page cost bounded by the page size, but the estimator and token-frequencies path each undermine that.
 
-[`polars-text/src/expressions.rs:255-272`](ldaca_wordflow/polars-text/src/expressions.rs#L255-L272) calls `struct_series_from_tokens` once per input row, allocating three fresh `Series` + a `StructChunked` + validity metadata, then appending via `AnonymousOwnedListBuilder::append_series` which concats them. 10 k rows × ~1 k tokens ≈ 30 k throwaway allocations.
+**Fix:** see "Tokens cache" section below.
 
-**Fix:** flat builder. Keep three growable `Vec<>`s (`tok`, `start`, `end`) plus one `Vec<i64>` of list-boundary offsets across the whole chunk, then construct one `ListChunked<StructChunked>` at the end. Standard idiom for plugin list-of-struct outputs.
-
-### 4. Token frequencies fully collects + materialises to Python objects
+### 3. `calculate_token_frequencies` collects the full tokens column to Python
 
 [`backend/src/ldaca_wordflow/api/workspaces/analyses/token_frequencies.py:464-473`](ldaca_wordflow/backend/src/ldaca_wordflow/api/workspaces/analyses/token_frequencies.py#L464-L473):
 
 ```python
-tokens_df = node_data.select(...).collect()
-node_tokens[node_id] = [[str(tok) ...] for row in tokens_df[...].to_list()]
+tokens_df = node_data.select(
+    pl.col(derived_tokens_col)
+    .list.eval(pl.element().struct.field("token"))
+    .alias("__tokens__")
+).collect()
+node_tokens[node_id] = [
+    [str(tok) for tok in (row or []) if tok is not None]
+    for row in tokens_df["__tokens__"].to_list()
+]
 ```
 
-Full collect, then materialises every token as a Python `str` (~50 B overhead vs ~16 B Arrow), then pickles the list of lists to a worker. 10 k docs × ~1 k tokens ≈ 10 M PyObjects ≈ ~500 MB pure overhead.
+Forces a full collect, materialises every token as a Python `str` (~50 B overhead each vs ~16 B in Arrow), then pickles the whole `list[list[str]]` to a worker via `task_args`. For 10 k docs × ~1 k tokens that's 10 M PyObjects ≈ ~500 MB of pure object overhead before any work happens.
 
-**Fix:** ship the LazyFrame (or the cached tokens parquet path from §5 below) to the worker. Inside the worker, compute frequencies with `pl.col(...).list.eval(pl.element().struct.field("token")).explode().value_counts()` and sink to parquet. No Python materialisation.
+**Fix:** keep it in Polars end-to-end. Pass the LazyFrame (or, post-cache, the cache parquet path) to the worker; compute frequencies inside the worker with `pl.col(...).list.eval(pl.element().struct.field("token")).explode().value_counts()` and sink the result to the existing token-frequencies parquet artifact.
 
-### 5. Tokenisation re-runs on every page / probe / collect
+### 4. Unconditional `text.to_lowercase()` for CJK
 
-[`backend/src/ldaca_wordflow/core/derived_columns.py:57-71`](ldaca_wordflow/backend/src/ldaca_wordflow/core/derived_columns.py#L57-L71) only appends the `tokenize_with_offsets` expression to the lazy plan — no materialisation. Every downstream `.collect()` re-executes the tokeniser. With `is_elementwise=True` the slice should push past `with_columns`, so per-page concordance only re-tokenises page rows; but:
+[`polars-text/src/tokenizer.rs:44-48`](ldaca_wordflow/polars-text/src/tokenizer.rs#L44-L48) always allocates a fresh `String` and Unicode-lowercases when `lowercase=true` (the wrapper default at [`functions.py:35`](ldaca_wordflow/polars-text/polars_text/functions.py#L35)). CJK has no case to fold, so this is wasted CPU and allocation per row.
 
-- The page-size estimator probes the candidate ladder multiple times per request
-- `_count_tokens_concordance_hits` does `base_lf.select(derived_column).slice(0, size).collect()`
-- Token frequencies (§4) bypasses any laziness by collecting everything
+**Fix:** in `tokenise_column` (backend), override `lowercase=False` when `language in {"zh","ja","ko"}` or `model in {"jieba","lindera-*"}`. Defence-in-depth in Rust: short-circuit the lowercase call when the backend is `Jieba` or `Lindera`.
 
-**Fix: persistent tokens cache.** See dedicated section below.
+### 5. Per-row Series construction in the list builder
 
-### 6. Verify slice pushdown
+[`polars-text/src/expressions.rs:281-308`](ldaca_wordflow/polars-text/src/expressions.rs#L281-L308) calls `struct_series_from_tokens` per input row, allocating three new `Series` and a `StructChunked` each time, then appending via `AnonymousOwnedListBuilder::append_series` which concatenates them. For 10 k rows × ~1 k tokens that's 10 k throwaway Series and ~30 k extra allocations.
 
-Run `node.data.slice(0, 20).explain(optimized=True)` on a tokenised node to confirm the planner pushes the slice past `with_columns`. If not, every page collect tokenises the entire corpus regardless of fixes 1–5.
+**Fix:** flat builder. Maintain three growable `Vec<>`s (`tok_col`, `start_col`, `end_col`) plus a `Vec<i64>` of cumulative list offsets across the entire chunk. Build a single `ListChunked<StructChunked>` once at the end.
 
-## Tokens cache — design
+### 6. Slice-pushdown verification (resolved, with caveat)
 
-User-specified requirements:
-1. Store outside the workspace garbage collector's reach.
-2. Sharable by child data blocks with same/subset columns of the same source.
-3. Sweep when no live data block references it.
-
-### Cache location
-
-`~/.ldaca/tokens-cache/` (mirrors `~/.cache/ldaca/lindera/` used by polars-text). **Outside per-user/per-workspace directories** so workspace deletion or workspace GC never touches it. Path is user-scoped (one cache per OS user), not workspace-scoped.
-
-### Cache key & schema
-
-Each cache entry is a parquet file with content-defined identity:
-
-- **Filename:** `{model}__{params_hash}__{source_hash}.parquet`
-  - `model`: e.g. `jieba`, `lindera-ja-ipadic`, `bert-base-uncased`
-  - `params_hash`: sha256(json({lowercase, remove_punct}))[:12]
-  - `source_hash`: sha256 of the source column's content fingerprint (see below)
-- **Schema:** `{__content_hash: u64, tokens: List<Struct{token, start, end}>}`
-  - The per-row `__content_hash` is `pl.col(source_column).hash()` — fast 64-bit xxhash
-  - Storing the per-row hash lets child blocks share the cache via a hash-join even after filter / sort / column-select
-
-The **source fingerprint** for the filename is computed once at tokenise time:
+Ran the manual check after the cache landed:
 
 ```python
-source_hash = sha256(b"|".join(
-    str(h).encode() for h in source_lf.select(pl.col(col).hash()).collect()[col].to_list()
-))[:16]
+print(node.data.slice(0, 5).explain(optimized=True))
 ```
 
-This makes the cache identity content-defined: two corpora with the same text in the same order produce the same hash, hence one shared cache file. Different orderings still share *rows* via the per-row `__content_hash`.
+Result: the optimised plan is **identical** to the full-data plan — Polars 1.40 does **not** push the slice past the `LEFT JOIN` to the cache parquet. So every paged query reads the **entire** cache parquet's `(hash, tokens)` columns and joins them against the (correctly-sliced) source rows.
 
-### Lazy-plan integration
+That's a **partial** outcome:
 
-`tokenise_column` replaces the in-plan `tokenize_with_offsets` expression with a cached read:
+- ✅ Re-tokenisation is gone — the dominant cost. Tokens are computed exactly once.
+- ⚠️ Each page still reads the full cache parquet (~MB scale for a 10 k-row corpus, ~tens of ms). Much better than seconds-to-minutes of Jieba / Lindera work, but not free.
+
+Possible follow-up optimisations (out of scope here, but worth recording):
+
+- **Per-source bucketed cache parquets.** Partition the cache by hash prefix (e.g. 16 files keyed by `hash >> 60`) so a slice that touches only one bucket reads ~1/16th of the data. Adds write-side complexity.
+- **Two-pass collect.** API endpoint could compute the slice's content hashes first, then `scan_parquet(cache).filter(pl.col("__hash__").is_in(hashes))` to read only the needed rows. Bypasses the join entirely; needs a small helper in `tokens_cache`.
+- **Statistics-driven parquet pruning.** Polars + Arrow already read parquet page-level statistics; writing the cache sorted by `__content_hash__` would let the scanner skip pages whose hash range doesn't overlap the slice's hash set. Single-line `.sort()` before `sink_parquet`.
+
+None of these are urgent given the structural win the cache already delivers, but they are the natural next moves if profiling shows the parquet read becoming the bottleneck after Fix #2.
+
+The functional test `test_tokens_cache::test_tokenise_column_slice_collect_returns_correct_tokens` pins the correctness invariant: sliced collects must still return matching tokens for the surviving rows.
+
+---
+
+## Tokens cache design
+
+The cache is the structural fix for issue 2. It turns tokenisation from "an expression that re-runs forever" into "a one-time write, then a join." Design constraints come straight from the request:
+
+1. **Location outside workspace-GC reach** — must survive `clear_workspace_artifacts_dir` and workspace deletion.
+2. **Sharable across child blocks** with same / subset of rows.
+3. **Sweepable** when no live node references it.
+
+### Storage location
+
+```
+~/.cache/ldaca_wordflow/tokens/
+    {cache_key}.parquet         # token data
+    {cache_key}.manifest.json   # references + metadata
+```
+
+Matches the existing `~/.cache/ldaca_wordflow/spacy/` convention from [`quotation_extractor.py:32`](ldaca_wordflow/backend/src/ldaca_wordflow/core/quotation_extractor.py#L32). Workspaces live at `~/Documents/ldaca/...` ([`settings.py:32`](ldaca_wordflow/backend/src/ldaca_wordflow/settings.py#L32)); workspace GC operates entirely within that tree, so `~/.cache/...` is untouched.
+
+Override via env var `LDACA_TOKENS_CACHE_DIR` for tests / Tauri sandboxing.
+
+### Cache schema
+
+One parquet per `(model, params)` combination. Schema:
+
+| Column | Type | Notes |
+|---|---|---|
+| `__content_hash__` | `UInt64` | xxhash64 of the source string (Polars default `pl.col(...).hash()`) |
+| `tokens` | `List<Struct{token: String, start: Int64, end: Int64}>` | The persisted tokens column |
+
+**Cache key** is `sha256(f"{model}|lowercase={lc}|remove_punct={rp}")[:16]` — a short hex string used as the filename stem.
+
+Why hash-keyed (not row-index-keyed): the source node's row order can change as users filter / sort / sample. Hashing the source content makes the cache **position-independent** — a child block that retains a subset of parent rows still hits every cached entry through a hash join.
+
+### Tokenisation flow
 
 ```python
-cache_path = ensure_tokens_cache(source_lf, source_column, model, params)
+def tokenise_column(node, *, source_column, model, language) -> str:
+    cache_key = compute_cache_key(model, lowercase=..., remove_punct=...)
+    cache_path = cache_dir() / f"{cache_key}.parquet"
+    manifest_path = cache_dir() / f"{cache_key}.manifest.json"
 
-cache_lf = pl.scan_parquet(cache_path)
-new_lf = (
-    source_lf
-    .with_columns(pl.col(source_column).hash().alias("__content_hash"))
-    .join(cache_lf, on="__content_hash", how="left")
-    .drop("__content_hash")
-    .rename({"tokens": derived_name})
-)
-node.data = new_lf
+    # 1. Identify which source values are already cached
+    src_lf = node.data.select(
+        pl.col(source_column).alias("__src__"),
+        pl.col(source_column).hash().alias("__h__"),
+    )
+    if cache_path.exists():
+        cached_hashes = pl.scan_parquet(cache_path).select("__content_hash__").collect()
+        new_rows = src_lf.join(
+            cached_hashes.lazy().with_columns(pl.lit(True).alias("__cached__")),
+            left_on="__h__", right_on="__content_hash__", how="left",
+        ).filter(pl.col("__cached__").is_null()).unique(subset=["__h__"])
+    else:
+        new_rows = src_lf.unique(subset=["__h__"])
+
+    # 2. Tokenise only the new rows
+    new_tokens_df = new_rows.select(
+        pl.col("__h__").alias("__content_hash__"),
+        pt.tokenize_with_offsets(pl.col("__src__"), model=model,
+                                 lowercase=should_lowercase(language, model),
+                                 remove_punct=...).alias("tokens"),
+    ).collect()
+
+    # 3. Append-merge into the cache parquet
+    if cache_path.exists():
+        existing = pl.scan_parquet(cache_path)
+        combined = pl.concat([existing, new_tokens_df.lazy()]).unique(subset=["__content_hash__"])
+        combined.sink_parquet(cache_path.with_suffix(".tmp.parquet"))
+        cache_path.with_suffix(".tmp.parquet").replace(cache_path)
+    else:
+        new_tokens_df.write_parquet(cache_path)
+
+    # 4. Replace node.data with a plan that joins the cache by content hash
+    derived_name = derived_column_name(TOKENS_FORM, source_column, model)
+    new_lf = (
+        node.data
+        .with_columns(pl.col(source_column).hash().alias("__h__"))
+        .join(
+            pl.scan_parquet(cache_path).rename({"__content_hash__": "__h__", "tokens": derived_name}),
+            on="__h__", how="left",
+        )
+        .drop("__h__")
+    )
+    node.data = new_lf
+
+    # 5. Register reference in manifest
+    register_reference(manifest_path, user_id, workspace_id, node.id, source_column)
+
+    node.register_derived_column(derived_name, {..., "cache_key": cache_key})
+    return derived_name
 ```
 
-**Sharing**: any child block derived from this node by filter / select / sort inherits the lazy plan including the join. Child blocks that retain a subset of rows automatically retrieve only their rows from the cache; child blocks that drop the tokens column never touch the cache parquet (projection pushdown).
+### Sharing across child blocks
 
-**Missed rows**: if a child block was filtered before tokenisation and is tokenised later from the same source, the `__content_hash` matches the parent's rows → full reuse. New rows that don't match any cached hash get `tokens = null`; we compute those on the fly and append to the cache parquet (concat + dedup write).
+Falls out for free. When a user filters / sorts / sub-selects the parent node, the child node's `data` LazyFrame still contains the `with_columns(...).join(scan_parquet(...), on="__h__")` segment. The polars optimiser pushes filters past joins where it can, and the hash key carries through any operation that preserves rows. Result:
 
-### Reference tracking & sweep
+- **Filter** on parent → child reads only matching cached rows.
+- **Sort / shuffle** on parent → child reads cache by hash, gets the same tokens.
+- **Sample column subset** that still includes the source column → cache still joins.
+- **Drop the source column** without re-deriving → child carries the tokens column directly (the `with_columns` step pre-joined them).
 
-A sidecar manifest `~/.ldaca/tokens-cache/manifest.json` maps each cache filename to a list of references:
+The only edge case where sharing breaks is if a transformation modifies the source column's *content* (e.g. lower-casing it before tokenising). Such transforms should be marked "tokens-invalidating" on the Node side and trigger a re-derive — captured in `register_derived_column` metadata.
+
+### Manifest schema (`{cache_key}.manifest.json`)
 
 ```json
 {
-  "lindera-ja-ipadic__a1b2c3__deadbeef.parquet": {
-    "size_bytes": 1234567,
-    "created_at": "2026-05-15T10:00:00Z",
-    "last_accessed_at": "2026-05-15T12:34:00Z",
-    "references": [
-      {"user_id": "u1", "workspace_id": "ws-abc", "node_id": "n-xyz"}
-    ]
-  }
+  "model": "lindera-ja-ipadic",
+  "params": {"lowercase": false, "remove_punct": true},
+  "created_at": "2026-05-15T07:00:00Z",
+  "last_accessed": "2026-05-15T09:14:32Z",
+  "references": [
+    {"user_id": "u123", "workspace_id": "ws456", "node_id": "n789",
+     "source_column": "text", "derived_column": "__derived__.tokens.text.lindera-ja-ipadic",
+     "registered_at": "2026-05-15T07:00:00Z"}
+  ]
 }
 ```
 
-- `tokenise_column` adds the `(user, workspace, node)` triple to the cache entry's `references`
-- `delete_derived_column` and node-deletion paths remove the matching reference
-- Workspace deletion drops all references under that workspace
-- **Sweep** runs at backend startup and after any workspace delete: any cache file with `references == []` AND `last_accessed_at > 7 days ago` is deleted. The 7-day grace prevents thrashing when a user closes & reopens a workspace.
-- Optional secondary cap: total cache size limit (e.g. 5 GiB), LRU-evict by `last_accessed_at` when exceeded.
+References are added in `tokenise_column`, removed in `delete_derived_column` and on node / workspace deletion. The manifest is the source of truth for whether a cache file is live.
+
+### Sweep / GC
+
+Three layers, increasing strength:
+
+1. **Per-reference removal** — surgical, synchronous. On `delete_derived_column`, `delete_node`, `delete_workspace`, walk the affected references and drop them from the manifest. If `references` is empty AND `last_accessed` is older than `LDACA_TOKENS_CACHE_TTL_DAYS` (default 7), delete both files in the same call. Keeps the cache responsive to user-driven cleanup.
+
+2. **Startup sweep** — defensive. On backend boot, walk `~/.cache/ldaca_wordflow/tokens/`, for each `*.manifest.json` verify each referenced `(user, workspace, node)` still exists. Drop stale references. Delete files whose `references` end up empty AND `last_accessed` is past the TTL. Catches references stranded by crashes or out-of-band workspace deletion.
+
+3. **Row-level compaction (deferred)** — not in MVP. If a cache parquet accumulates many rows from short-lived workspaces, a `lf.filter(__content_hash__.is_in(live_hashes)).sink_parquet(...)` rewrite can reclaim within-file space. Out of scope for this branch; revisit if cache parquets grow unmanageably.
+
+The MVP ships layers 1 and 2.
 
 ### Concurrency
 
-Cache writes are rare (only on tokenise) and idempotent. Use a per-cache-file `flock` (advisory file lock) to serialise writers. Reads via `scan_parquet` are safe under POSIX read-while-write on stable files; the write path is atomic write-to-temp + rename.
+The cache parquet is rewritten via tmp-file-then-replace (atomic on POSIX). The manifest uses an exclusive `flock` (best-effort on Linux/macOS) around the read-modify-write. Concurrent tokenise calls on different `(model, params)` combinations are isolated by cache key. Concurrent calls on the *same* combination race on the cache file — the loser sees the winner's tokens on its next read and skips them.
 
-## Fix order & checkpoints
+---
 
-Each step ends with a commit on the perf branch.
+## Execution order
 
-| # | Step | Repo | Validation |
-|---|------|------|------------|
-| 1 | Branch creation | all three | `git branch --show-current` |
-| 2 | Plan committed | master | this file |
-| 3 | O(N²) byte→char fix | polars-text | `cargo test` (existing offset tests) |
-| 4 | Lowercase short-circuit (Rust) + CJK skip (Python) | polars-text + backend | `cargo test` + `uv run pytest tests/` scoped |
-| 5 | Flat list-of-struct builder | polars-text | `cargo test` — offset round-trip identical |
-| 6 | Tokens cache module (read/write/manifest) | backend | new unit test |
-| 7 | Wire cache into `tokenise_column` | backend | existing derived-columns tests |
-| 8 | Cache reference add/drop hooks | backend | new unit test |
-| 9 | Sweep routine + startup hook | backend | new unit test |
-| 10 | Token frequencies — drop Python materialisation, use cache | backend | existing token-freq tests |
-| 11 | Master submodule pointer bumps | master | `git submodule status` |
+Each step ends with `cargo test` (Rust) or `uv run pytest -q` (Python) and a commit. Commits stay in the submodule; pointer bumps in `ldaca_wordflow` and master are batched at the end.
 
-Per-commit rules:
-- Build green (Rust: `cargo build`, Python: import smoke + scoped pytest)
-- No `--no-verify`; respect pre-commit hooks
-- Commit message: `perf(cjk): <what> — <why>` style
-- Do **not** push until the user reviews
+1. **Branches** — `perf/cjk-tokeniser` in `polars-text` (off `multilingual`), `backend` (off `v0.4`), `ldaca_wordflow` (off `v0.4`).
+2. **Fix #1** (Rust, polars-text) — rewrite `byte_to_char_idx` + call-site rework in `tokenize_text_with_offsets`. Verify with the existing `test_jieba_offsets_reconstruct_chinese` test and add a Lindera-path regression test.
+3. **Fix #4** (Python, backend) — branch on language / model in `tokenise_column` to pass `lowercase=False` for CJK. (Defence-in-depth Rust change deferred unless a path that bypasses backend control appears.)
+4. **Fix #5** (Rust, polars-text) — flat list-of-struct builder in `tokenize_with_offsets`. Verify with existing tests + benchmark before/after on a 1k-row CJK fixture.
+5. **Fix #2** (Python, backend) — tokens cache: storage layout, cache key, write path, read-back join, reference manifest, sweep helper. New tests for cache hit/miss, sharing across child nodes, sweep behaviour.
+6. **Fix #3** (Python, backend) — rewrite `calculate_token_frequencies` to pass a LazyFrame / cache path to the worker; rewrite the worker to compute frequencies in Polars. Existing token-frequency goldens should stay green.
+7. **Fix #6** (manual) — run `.explain()` on a tokenised plan post-fix to confirm slice pushdown. Documented here; result captured in a follow-up note.
+8. **Pointer bumps** — bump `polars-text` and `backend` SHAs in `ldaca_wordflow`; bump `ldaca_wordflow` SHA in master. Each bump is its own commit.
 
-## Open questions for follow-up
+## What does NOT change
 
-- Should the source fingerprint include row order (`sha256` of concatenated hashes) or be order-invariant (`sha256` of sorted hashes)? Order-invariant maximises sharing but loses the "same hash = same parquet readable directly" property. Starting with order-sensitive; revisit if cache hit rate is poor.
-- Cache size cap default — 5 GiB feels right for desktop / Tauri; cloud deploys may want different. Make it env-overridable.
-- Cross-process safety on Windows: `flock` is POSIX-only. The Tauri build needs the `fcntl`-free equivalent (e.g. `fs2` crate or a simple lockfile-with-retry on Python side).
+- Public Python API of `polars-text` (function signatures, kwargs). Internal Rust changes only.
+- Tokens column schema (`List<Struct{token, start, end}>`). Backwards-compatible with persisted workspaces.
+- Wordflow's frontend. No UI changes needed.
+- The legacy English (BERT) path remains correct; it benefits from fixes 1 + 5 incidentally.
 
-## Out of scope for this branch
+## Out of scope
 
-- Streaming-engine opt-in (`collect(engine="streaming")`) — separate concern, can land later
-- Materialised concordance parquet integration with tokens cache — Phase 2.6 already has a materialised path for regex mode; tokens mode currently doesn't materialise. Defer to a follow-up.
-- POS / NER derived columns — same caching strategy applies but they're not the current pain point.
+- Row-level cache compaction (deferred).
+- A Tauri-side cache path override (the env var is enough for now; Tauri builds can set it).
+- Streaming engine flag (`engine="streaming"`) — separate investigation; current fixes don't require it.
+- Caching for non-tokens derived columns. The cache module should be generic enough to extend later but only `TOKENS_FORM` ships here.
+
+## Validation gates (per commit)
+
+- Rust: `cargo build --release` + `cargo test` in `polars-text/`.
+- Python: `uv run pytest -q tests/` in `backend/` (full suite, not just the touched module — `Verify between commits in multi-commit refactors` lesson from prior god-file work).
+- Pointer bumps: `git submodule status --recursive` clean before and after.
