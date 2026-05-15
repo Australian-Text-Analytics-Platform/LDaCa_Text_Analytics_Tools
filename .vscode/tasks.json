@@ -15,11 +15,28 @@
         {
             "label": "Start Backend",
             "type": "shell",
-            "command": "uv run uvicorn ldaca_wordflow.main:app --reload --port 8001",
+            // ``.venv/bin/python -m uvicorn`` (not ``uv run uvicorn``
+            // and not ``.venv/bin/uvicorn``):
+            //  - ``uv run uvicorn`` falls through to whatever uvicorn
+            //    is on $PATH (pipx in this user's case) when VS Code
+            //    auto-activates the master shim ``.venv`` first,
+            //    breaking with ``ModuleNotFoundError: docworkspace``.
+            //  - ``.venv/bin/uvicorn`` has a stale shebang from before
+            //    the v0.4.2 rename (``#!.../ldaca_web_app/backend/...``)
+            //    and the script wasn't regenerated, so direct
+            //    invocation dies with ``No such file or directory``.
+            // ``python -m uvicorn`` sidesteps both issues — it uses
+            // the venv's python (resolved via .venv/bin/python symlink)
+            // and finds uvicorn from that venv's site-packages.
+            "command": ".venv/bin/python -m uvicorn ldaca_wordflow.main:app --reload --port 8001",
             "options": {
                 "cwd": "${workspaceFolder}/ldaca_wordflow/backend",
                 "env": {
-                    "PYTHONPATH": "${workspaceFolder}/ldaca_wordflow/backend/src"
+                    "PYTHONPATH": "${workspaceFolder}/ldaca_wordflow/backend/src",
+                    // Override the master-venv activation so any
+                    // subprocess (uv tooling, pip, etc.) that reads
+                    // VIRTUAL_ENV sees the backend's venv.
+                    "VIRTUAL_ENV": "${workspaceFolder}/ldaca_wordflow/backend/.venv"
                 }
             },
             "problemMatcher": [],
