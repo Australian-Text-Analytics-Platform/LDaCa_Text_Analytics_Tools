@@ -1,4 +1,4 @@
-"""Binder-specific helpers for the LDaCA web app notebook launcher."""
+"""Binder-specific helpers for the LDaCA Wordflow notebook launcher."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import os
 
 
 def display_app_link(port: int = 8001) -> None:
-    """Show a clickable link to open the web app, adapting to Binder/JupyterHub or local."""
+    """Show a clickable link to open Wordflow, adapting to Binder/JupyterHub or local."""
     base = os.environ.get("JUPYTERHUB_SERVICE_PREFIX", "")
     if base:
         if not base.endswith("/"):
@@ -21,8 +21,8 @@ def display_app_link(port: int = 8001) -> None:
         display(Javascript(f"window.open('{url}', '_blank');"))
         display(
             Markdown(
-                f"Click the following link to open the web app:\n# [Open web app]({url})"
+                f"Click the following link to open LDaCA Wordflow:\n# [Open LDaCA Wordflow]({url})"
             )
         )
     except ImportError:
-        print(f"Open web app: {url}")
+        print(f"Open LDaCA Wordflow: {url}")
