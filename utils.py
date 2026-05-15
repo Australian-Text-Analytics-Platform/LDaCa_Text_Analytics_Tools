@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import time
 
@@ -12,6 +13,18 @@ import time
 os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
 
 
+def _quiet_logging() -> None:
+    """Suppress backend + uvicorn INFO output so the launcher cell stays clean.
+
+    Uvicorn rebuilds its logging config on start_server() with log_level="info",
+    which would otherwise overwrite any pre-set level on the uvicorn loggers,
+    so we call this once after start_server has had a chance to initialize.
+    """
+    logging.disable(logging.INFO)
+    for name in ("uvicorn", "uvicorn.access", "uvicorn.error", "ldaca_wordflow"):
+        logging.getLogger(name).setLevel(logging.WARNING)
+
+
 def display_app_link(port: int = 8001, startup_delay: float = 3.0) -> None:
     """Show a clickable link to open Wordflow, adapting to Binder/JupyterHub or local.
 
@@ -19,6 +32,8 @@ def display_app_link(port: int = 8001, startup_delay: float = 3.0) -> None:
     backend has time to bind its port — otherwise the first request races
     the FastAPI startup and the user gets a 500.
     """
+    _quiet_logging()
+
     base = os.environ.get("JUPYTERHUB_SERVICE_PREFIX", "")
     if base:
         if not base.endswith("/"):
@@ -29,6 +44,10 @@ def display_app_link(port: int = 8001, startup_delay: float = 3.0) -> None:
 
     if startup_delay > 0:
         time.sleep(startup_delay)
+
+    # Uvicorn finishes setup_logging during its first request; re-apply so any
+    # later access-log records still respect WARNING.
+    _quiet_logging()
 
     try:
         from IPython.display import Javascript, Markdown, display
