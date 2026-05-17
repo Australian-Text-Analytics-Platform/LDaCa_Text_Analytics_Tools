@@ -15,16 +15,32 @@ need a stable, versioned setup.
 
 ## Latest
 
-- Published (AEST): 2026-05-15
-- Package: `ldaca-wordflow@0.4.4` (CJK perf + multilingual UX polish; see the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.4.4/CHANGELOG.md) for the full list)
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/b8d0cdc?labpath=index.ipynb)
-- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/LDaCA.Wordflow_0.4.4_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/ldaca-desktop-apple-silicon-0.4.4.dmg)
-- Run locally: `uvx --refresh ldaca-wordflow@0.4.4`
+- Published (AEST): 2026-05-17
+- Package: `ldaca-wordflow@0.5.0` (demo snapshots across all 5 analysis tools + Trends client-side re-aggregation + dtype normalisation on load; see the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.0/CHANGELOG.md) for the full list)
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/0fa075e?labpath=index.ipynb)
+- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/LDaCA.Wordflow_0.5.0_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/ldaca-desktop-apple-silicon-0.5.0.dmg)
+- Run locally: `uvx --refresh ldaca-wordflow@0.5.0`
+
+## What's new in v0.5.0 — Demo Snapshots
+
+**Save an analysis exactly the way it appears on screen, then re-open it later or share with a collaborator — no re-run required.**
+
+Every one of the five analysis tools — Concordance, Quotation, Trends, Token Frequency, Topic Modelling — now has Save / Open snapshot buttons in its header. Saved bundles are small `.ldaca-snapshot` zips that travel through email, Slack, or the new Sample Data dialog's "Demo snapshots" import tab. Loaded snapshots render in a read-only viewer with a banner showing where they came from.
+
+The headline feature is **Trends client-side re-aggregation**. Trends snapshots are captured as **data-rich payloads**: pick the finest time bin (down to seconds) and up to 3 group-by columns at save time, and the viewer can locally coarsen frequency (daily → weekly → monthly → …), drop group dimensions, and case-fold the legend — all without a backend round-trip. A 200 000-row hard cap protects bundle size, with a live cardinality-aware estimator and an opt-in backend dry-run for verification near the cap.
+
+Two infrastructure improvements ship alongside:
+
+- **Dtype normalisation on load** — mixed-precision columns (`Int8` / `Float32` / naïve datetimes) are now coerced to a canonical profile (Int64 / Float64 / Datetime[μs, UTC] / Utf8) with one consolidated warning per file. Workspace save / reopen no longer fails on integer-width mismatches from some sample-data feeds.
+- **Centralized "Disabled in snapshot view" tooltip** — every read-only control across all five tools now surfaces the same hover hint, with no native-`title=` 1–2 s delay.
+
+Token-frequency and Topic-modelling snapshots also keep their post-fit controls live (stopwords filter, words-per-topic slider, display caps, sort), so the viewer is interactive enough to support real exploration of a saved analysis. See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.0/CHANGELOG.md) for the full v0.5.0 entry.
 
 ## Release History
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
+| 2026-05-17 | `0.5.0` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/0fa075e?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/LDaCA.Wordflow_0.5.0_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/ldaca-desktop-apple-silicon-0.5.0.dmg) | `uvx --refresh ldaca-wordflow@0.5.0` |
 | 2026-05-15 | `0.4.4` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/b8d0cdc?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/LDaCA.Wordflow_0.4.4_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/ldaca-desktop-apple-silicon-0.4.4.dmg) | `uvx --refresh ldaca-wordflow@0.4.4` |
 | 2026-05-15 | `0.4.3` † | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/5b2f422?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.3/LDaCA.Wordflow_0.4.2_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.3/ldaca-desktop-apple-silicon-0.4.2.dmg) | `uvx --refresh ldaca-wordflow@0.4.3` |
 | 2026-05-15 | `0.4.2` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/107cce6?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.2/LDaCA.Wordflow_0.4.2_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.2/ldaca-desktop-apple-silicon-0.4.2.dmg) | `uvx --refresh ldaca-wordflow@0.4.2` |
