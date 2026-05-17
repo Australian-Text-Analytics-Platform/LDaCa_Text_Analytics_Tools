@@ -14,6 +14,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Node tooling
+node_modules/
+
 # Local editor settings — but track shared task definitions
 # (git can't re-include a file whose parent dir is excluded, so list
 # the unwanted entries inside .vscode/ rather than the dir itself).
