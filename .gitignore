@@ -24,3 +24,7 @@ wheels/
 _pypi_placeholders/
 # Local Continue AI rules (not shared with collaborators)
 .continue/
+
+# Internal dev audit artifacts — keep local, do not commit
+WORDFLOW_AUDIT_*.md
+audit-plan.md
