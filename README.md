@@ -16,29 +16,29 @@ need a stable, versioned setup.
 ## Latest
 
 - Published (AEST): 2026-05-25
-- Package: `ldaca-wordflow@0.5.3` (re-stamps yanked v0.5.2; workspace-rename fix + file-tree productivity + Apache-2.0 relicense; see the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.3/CHANGELOG.md) for the full list)
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/ad73a87?labpath=index.ipynb)
-- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/LDaCA.Wordflow_0.5.3_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/ldaca-desktop-apple-silicon-0.5.3.dmg)
-- Run locally: `uvx --refresh ldaca-wordflow@0.5.3`
+- Package: `ldaca-wordflow@0.5.4` (Frequency snapshot display-limit fix + Windows CI shutdown workaround, on top of v0.5.3; the v0.5 release branch was also fast-forwarded to dev so several previously-unreleased dev features land here — see "What's new" below)
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/af696f9?labpath=index.ipynb)
+- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/LDaCA.Wordflow_0.5.4_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-desktop-apple-silicon-0.5.4.dmg)
+- Run locally: `uvx --refresh ldaca-wordflow@0.5.4`
 
-## What's new in v0.5.3 — Workspace Rename Fix + File-tree Productivity + Apache-2.0
+## What's new in v0.5.4 — Frequency Snapshot Display-Limit Fix + v0.5 line aligned with dev
 
-**Workspace rename keeps data blocks loadable.** In v0.5.1 and earlier, renaming a workspace silently invalidated all of its data blocks — the scan paths inside the saved plan still pointed at the old workspace directory, so reopening the renamed workspace either produced empty blocks or failed on materialisation. v0.5.3 rebases those scan paths transactionally as part of the rename, so blocks stay valid across renames. This was the headline fix that v0.5.2 was meant to ship; v0.5.2 has been yanked from PyPI after the release-branch cherry-pick dropped this commit (and two file-tree feature commits) on its way to the published wheel.
+**Frequency snapshot display-limit fix.** In v0.5.3 and earlier, the Cloud display limit and List display limit inputs in a loaded Frequency snapshot snapped back to the captured value on every edit — typing a new number, blurring, then watching it revert. The fix tracks the last `backendTokenLimit` we synced from so the resync effect only fires when the backend value itself changes (a new snapshot loads, or live results arrive), not on every override change. Live mode behaviour is unchanged.
 
-**File-tree productivity.** Three small additions add up to a much faster data-loader pass:
+**v0.5 release line fast-forwarded to dev.** The cherry-pick-only convention on the `v0.5` branch had quietly drifted ~34 patches behind `dev` over the v0.5.0–v0.5.3 window, and the v0.5.4 PyPI wheel was bundled from `dev` (so PyPI carried `dev` features while a v0.5-source rebuild would have shipped older code). To remove that risk going forward, `v0.5` and `main` were force-updated to `dev`'s tip and the cherry-pick discipline is retired — `dev` is now the source of truth and release branches fast-forward off it. As a side effect this v0.5.4 release formally publishes the dev-only work that had accumulated, including:
 
-- **Folder operations:** delete a folder (with explicit confirmation), drag a file or folder onto another folder to move it, and folder expand/collapse state is remembered for the session so navigating a deep dataset keeps your context between dialogs.
-- **Name your data block when adding a file** — the Add-file flow now offers an editable name field so the resulting workspace node carries the label you intend, not the auto-derived filename stem.
-- **Find your newly uploaded workspace** — uploading a workspace ZIP now scrolls the matching row into view in the workspace list and highlights it with the existing hint system, so you can tell at a glance which workspace just landed and load it from there.
+- **Lazy on-demand tokenisation.** Switching languages no longer re-tokenises eagerly; the tokens cache is repaired on first use of the new language and persists. Cross-machine workspaces with a stale cache get a repair banner + a re-tokenise affordance.
+- **Grey is no longer rolled by the random colour picker.** Slate-grey is reserved as the "no colour assigned" indicator across the UI, so the auto-assignment palette skips it. The colour picker still offers grey as a manual choice.
+- **Mojibake repair at the loader.** Common encoding-corruption patterns get fixed up at file ingestion instead of leaking into downstream analyses.
+- **Cache-dir alignment + dotted-column accessors** for the tokenise + table paths.
 
-**Apache-2.0 relicense.** Source files now carry Apache-2.0 headers and `NOTICE` lists the LDaCA + SIH joint copyright for 2025-2026. No behavioural changes for end users. Previous releases remain available under their original MIT license.
-
-**AI Annotator hidden from the sidebar.** The early-prototype AI Annotator tool is removed from the sidebar nav and from the "Edit visible views" toggle. The feature code and routing are intact; it remains accessible via direct URL while the tool matures. See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.3/CHANGELOG.md) for the full v0.5.3 entry.
+See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.4/CHANGELOG.md) for the full v0.5.4 entry.
 
 ## Release History
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
+| 2026-05-25 | `0.5.4` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/af696f9?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/LDaCA.Wordflow_0.5.4_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-desktop-apple-silicon-0.5.4.dmg) | `uvx --refresh ldaca-wordflow@0.5.4` |
 | 2026-05-25 | `0.5.3` ‡ | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/ad73a87?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/LDaCA.Wordflow_0.5.3_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/ldaca-desktop-apple-silicon-0.5.3.dmg) | `uvx --refresh ldaca-wordflow@0.5.3` |
 | 2026-05-21 | `0.5.1` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/98c8082?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/LDaCA.Wordflow_0.5.1_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/ldaca-desktop-apple-silicon-0.5.1.dmg) | `uvx --refresh ldaca-wordflow@0.5.1` |
 | 2026-05-17 | `0.5.0` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/0fa075e?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/LDaCA.Wordflow_0.5.0_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/ldaca-desktop-apple-silicon-0.5.0.dmg) | `uvx --refresh ldaca-wordflow@0.5.0` |
