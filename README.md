@@ -15,30 +15,31 @@ need a stable, versioned setup.
 
 ## Latest
 
-- Published (AEST): 2026-05-21
-- Package: `ldaca-wordflow@0.5.1` (multi-user tokens-cache safety + lazy on-demand tokenisation + concordance L1/R1 polish + mojibake repair on load; see the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.1/CHANGELOG.md) for the full list)
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/98c8082?labpath=index.ipynb)
-- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/LDaCA.Wordflow_0.5.1_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/ldaca-desktop-apple-silicon-0.5.1.dmg)
-- Run locally: `uvx --refresh ldaca-wordflow@0.5.1`
+- Published (AEST): 2026-05-25
+- Package: `ldaca-wordflow@0.5.3` (re-stamps yanked v0.5.2; workspace-rename fix + file-tree productivity + Apache-2.0 relicense; see the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.3/CHANGELOG.md) for the full list)
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/ad73a87?labpath=index.ipynb)
+- Tauri desktop: [Windows MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/LDaCA.Wordflow_0.5.3_x64_en-US.msi) | [macOS DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/ldaca-desktop-apple-silicon-0.5.3.dmg)
+- Run locally: `uvx --refresh ldaca-wordflow@0.5.3`
 
-## What's new in v0.5.1 — Multi-user Cache Safety + Lazy Tokenisation
+## What's new in v0.5.3 — Workspace Rename Fix + File-tree Productivity + Apache-2.0
 
-**Multi-user tokens-cache safety.** A workspace tokenised by one user and shared with another no longer writes cache parquets into the original author's folder — each user's cache stays in their own tree. The previous shared `.cache/` directory was readable by every authenticated user via the data-loader, effectively exposing tokenised content across accounts; v0.5.1 moves the cache inside each user's own folder and rewrites a shared workspace's lazy tokens expression on load to stamp it under the current user's identity. Matters for the Nectar multi-user deployment and for any future filesystem where ACLs aren't relied on for separation.
+**Workspace rename keeps data blocks loadable.** In v0.5.1 and earlier, renaming a workspace silently invalidated all of its data blocks — the scan paths inside the saved plan still pointed at the old workspace directory, so reopening the renamed workspace either produced empty blocks or failed on materialisation. v0.5.3 rebases those scan paths transactionally as part of the rename, so blocks stay valid across renames. This was the headline fix that v0.5.2 was meant to ship; v0.5.2 has been yanked from PyPI after the release-branch cherry-pick dropped this commit (and two file-tree feature commits) on its way to the published wheel.
 
-**Lazy on-demand tokenisation by default.** The tokens cache is now a side effect of analysis (filled lazily on the first collect), not something the user manages explicitly. The Tokenise dialog completes instantly; per-row tokens fill in on demand under an advisory lock. The Phase 2.5 "repair banner" + cross-machine workspace repair flow is replaced by an automatic plan-time alignment hook that handles cross-user, cross-machine, and cross-OS path differences uniformly. v0.5.0 and earlier workspaces are auto-migrated to the lazy form on first open.
+**File-tree productivity.** Three small additions add up to a much faster data-loader pass:
 
-Polish across the analyses ships alongside:
+- **Folder operations:** delete a folder (with explicit confirmation), drag a file or folder onto another folder to move it, and folder expand/collapse state is remembered for the session so navigating a deep dataset keeps your context between dialogs.
+- **Name your data block when adding a file** — the Add-file flow now offers an editable name field so the resulting workspace node carries the label you intend, not the auto-derived filename stem.
+- **Find your newly uploaded workspace** — uploading a workspace ZIP now scrolls the matching row into view in the workspace list and highlights it with the existing hint system, so you can tell at a glance which workspace just landed and load it from there.
 
-- **Concordance:** L1/R1 columns now sit adjacent to the match, with duplicates dimmed in-place and a per-column text-colour picker; a "Hide L1/R1" toggle keeps the tighter layout available when those columns aren't useful.
-- **Token-frequency:** last-used language + model persist to preferences; %DIFF / LogRatio formulas aligned with the Lancaster wizard so cross-tool keyness comparisons agree to the published reference.
-- **Mojibake repair at the data-loader boundary** — classic `Ã©` / `â€™` garbage from UTF-8 re-encoded through CP-1252 is detected and repaired on load via `ftfy`, gated to the encoding fixers only so CJK / Arabic / Cyrillic corpora stay untouched.
+**Apache-2.0 relicense.** Source files now carry Apache-2.0 headers and `NOTICE` lists the LDaCA + SIH joint copyright for 2025-2026. No behavioural changes for end users. Previous releases remain available under their original MIT license.
 
-One graph-rendering safety fix that previously only existed in source-checkout users now reaches PyPI users via `docworkspace>=0.2.9`: a failing `Node.info()` (e.g. source parquet moved or deleted) returns a per-node error envelope rather than 500'ing the whole graph endpoint. See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.1/CHANGELOG.md) for the full v0.5.1 entry.
+**AI Annotator hidden from the sidebar.** The early-prototype AI Annotator tool is removed from the sidebar nav and from the "Edit visible views" toggle. The feature code and routing are intact; it remains accessible via direct URL while the tool matures. See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.3/CHANGELOG.md) for the full v0.5.3 entry.
 
 ## Release History
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
+| 2026-05-25 | `0.5.3` ‡ | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/ad73a87?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/LDaCA.Wordflow_0.5.3_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/ldaca-desktop-apple-silicon-0.5.3.dmg) | `uvx --refresh ldaca-wordflow@0.5.3` |
 | 2026-05-21 | `0.5.1` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/98c8082?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/LDaCA.Wordflow_0.5.1_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/ldaca-desktop-apple-silicon-0.5.1.dmg) | `uvx --refresh ldaca-wordflow@0.5.1` |
 | 2026-05-17 | `0.5.0` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/0fa075e?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/LDaCA.Wordflow_0.5.0_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.0/ldaca-desktop-apple-silicon-0.5.0.dmg) | `uvx --refresh ldaca-wordflow@0.5.0` |
 | 2026-05-15 | `0.4.4` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/b8d0cdc?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/LDaCA.Wordflow_0.4.4_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.4.4/ldaca-desktop-apple-silicon-0.4.4.dmg) | `uvx --refresh ldaca-wordflow@0.4.4` |
@@ -52,6 +53,8 @@ One graph-rendering safety fix that previously only existed in source-checkout u
 Historical release rows above `v0.4.2` keep the `ldaca-web-app` install command since those versions only exist under the old PyPI name. GitHub release-asset links auto-redirect from the old `ldaca_web_app` repo slug to `ldaca-wordflow`.
 
 † `v0.4.3` ships byte-identical code to `v0.4.4` on the `pip install` path, but a missed version source meant its desktop assets were stamped `0.4.2` (the filename — and the "About" / "Installed apps" entry on the installed binary — both read `0.4.2`). `v0.4.4` re-cuts the same code with the version string corrected across all five build inputs. Pip users of `0.4.3` see a cosmetic version mismatch only; desktop users should re-download `v0.4.4`.
+
+‡ `v0.5.3` re-stamps `v0.5.2`. The `v0.5.2` PyPI wheel was cut from a release-branch cherry-pick that silently dropped three commits from `dev` — the workspace-rename fix and the two file-tree feature additions — so the published wheel was a near-no-op. `v0.5.2` has been yanked on PyPI and never had desktop builds released (the root tag was retracted before the desktop workflow ran). Use `v0.5.3`.
 
 ## Local development
 
