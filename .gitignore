@@ -22,3 +22,5 @@ wheels/
 
 # Local-only PyPI placeholder/shim build dirs (see PLACEHOLDER_PYPI_PLAN.md / RENAME_PLAN.md)
 _pypi_placeholders/
+# Local Continue AI rules (not shared with collaborators)
+.continue/
