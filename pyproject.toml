@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Binder wrapper for LDaCA Wordflow"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["ldaca-wordflow[deploy]>=0.5.4", "torch"]
+dependencies = ["ldaca-wordflow[deploy]>=0.5.5", "torch"]
 
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
