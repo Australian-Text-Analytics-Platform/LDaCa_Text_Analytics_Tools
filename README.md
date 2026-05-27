@@ -15,14 +15,23 @@ need a stable, versioned setup.
 
 ## Latest
 
-- Published (AEST): 2026-05-25
-- Package: `ldaca-wordflow@0.5.4` (Frequency snapshot display-limit fix + Windows CI shutdown workaround, on top of v0.5.3; the v0.5 release branch was also fast-forwarded to dev so several previously-unreleased dev features land here — see "What's new" below)
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/af696f9?labpath=index.ipynb)
-- Desktop app (v0.5.4) — two installers:
-  - **First time? Download the full installer** (recommended) — it includes everything the app needs, so the first launch sets up without an internet connection (ready in seconds on Mac, a few minutes on Windows): [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-x64-0.5.4.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-apple-silicon-0.5.4.dmg)
-  - **Already have a previous version (v0.5.4 or later)? Download the lightweight installer** — a much smaller download that reuses what's already on your computer: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-x64-0.5.4.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-apple-silicon-0.5.4.dmg)
+- Published (AEST): 2026-05-27
+- Package: `ldaca-wordflow@0.5.5` (cross-platform "update available" reminder + a desktop runtime that refreshes itself on reinstall, a concordance cancel/worker-pool fix, and plain-language filter hints — see "What's new" below)
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/c2cb50e?labpath=index.ipynb)
+- Desktop app (v0.5.5) — two installers:
+  - **First time? Download the full installer** (recommended) — it includes everything the app needs, so the first launch sets up without an internet connection (ready in seconds on Mac, a few minutes on Windows): [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-x64-0.5.5.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-apple-silicon-0.5.5.dmg)
+  - **Already have a previous version (v0.5.4 or later)? Download the lightweight installer** — a much smaller download that reuses what's already on your computer: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-x64-0.5.5.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-apple-silicon-0.5.5.dmg)
   - The macOS app is signed by Apple. On Windows you may see a security prompt — choose "More info" → "Run anyway".
-- Run locally: `uvx --refresh ldaca-wordflow@0.5.4`
+- Run locally: `uvx --refresh ldaca-wordflow@0.5.5`
+
+## What's new in v0.5.5 — Cross-platform update reminder + self-refreshing desktop runtime
+
+- **"Update available" reminder on every platform.** When a newer release is on PyPI, a dismissible banner tells you the new version and where to get it (download for desktop, launch for web/Binder) — driven by a new backend `/api/version` endpoint, so it works in the desktop app, the `uvx` runner, and the web deployments alike. On a shared/hosted server you can request an update via the feedback form.
+- **The desktop runtime refreshes itself on reinstall.** Installing a newer desktop build over an existing one reconciles the bundled Python runtime to the new version automatically on first launch — no manual reset.
+- **Fixed: analysis no longer locks up after you cancel a task.** Stopping a running concordance used to break the shared worker pool so every later search failed until restart; the pool now rebuilds itself.
+- **Plain-language filter hints** (no more "operator"/"value"/"condition") and a Zenodo concept DOI for citation.
+
+Workspace compatibility: no serialization-layer change since v0.5.4; workspaces saved by prior 0.5.x versions open unchanged. See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/blob/v0.5.5/CHANGELOG.md) for the full v0.5.5 entry.
 
 ## What's new in v0.5.4 — Frequency Snapshot Display-Limit Fix + v0.5 line aligned with dev
 
@@ -41,6 +50,7 @@ See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platfo
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
+| 2026-05-27 | `0.5.5` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/c2cb50e?labpath=index.ipynb) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-x64-0.5.5.msi) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-x64-0.5.5.msi) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-apple-silicon-0.5.5.dmg) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-apple-silicon-0.5.5.dmg) | `uvx --refresh ldaca-wordflow@0.5.5` |
 | 2026-05-25 | `0.5.4` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/af696f9?labpath=index.ipynb) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-x64-0.5.4.msi) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-x64-0.5.4.msi) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-apple-silicon-0.5.4.dmg) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-apple-silicon-0.5.4.dmg) | `uvx --refresh ldaca-wordflow@0.5.4` |
 | 2026-05-25 | `0.5.3` ‡ | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/ad73a87?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/LDaCA.Wordflow_0.5.3_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.3/ldaca-desktop-apple-silicon-0.5.3.dmg) | `uvx --refresh ldaca-wordflow@0.5.3` |
 | 2026-05-21 | `0.5.1` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/98c8082?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/LDaCA.Wordflow_0.5.1_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.1/ldaca-desktop-apple-silicon-0.5.1.dmg) | `uvx --refresh ldaca-wordflow@0.5.1` |
@@ -58,6 +68,14 @@ Historical release rows above `v0.4.2` keep the `ldaca-web-app` install command 
 † `v0.4.3` ships byte-identical code to `v0.4.4` on the `pip install` path, but a missed version source meant its desktop assets were stamped `0.4.2` (the filename — and the "About" / "Installed apps" entry on the installed binary — both read `0.4.2`). `v0.4.4` re-cuts the same code with the version string corrected across all five build inputs. Pip users of `0.4.3` see a cosmetic version mismatch only; desktop users should re-download `v0.4.4`.
 
 ‡ `v0.5.3` re-stamps `v0.5.2`. The `v0.5.2` PyPI wheel was cut from a release-branch cherry-pick that silently dropped three commits from `dev` — the workspace-rename fix and the two file-tree feature additions — so the published wheel was a near-no-op. `v0.5.2` has been yanked on PyPI and never had desktop builds released (the root tag was retracted before the desktop workflow ran). Use `v0.5.3`.
+
+## Citation
+
+If you use LDaCA Wordflow in your research, please cite it:
+
+> Guo, S., Sun, C., Bednarek, M., Haan, S., Lynch, M. & Rehman, A. (2026), _LDaCA Wordflow_ [Computer software]. https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/. DOI: [10.5281/zenodo.20408328](https://doi.org/10.5281/zenodo.20408328)
+
+The DOI above is the **concept DOI** — it always resolves to the latest version on Zenodo. Each release also has its own version-specific DOI on its Zenodo record.
 
 ## Local development
 
