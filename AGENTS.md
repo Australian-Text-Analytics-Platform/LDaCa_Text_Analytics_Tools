@@ -27,7 +27,7 @@ LDaCA-Text-Analytics-Tools/             ← THIS REPO (master)
 
 | Submodule | Tracks branch | Production tag | Why this branch |
 |---|---|---|---|
-| `ldaca_wordflow` | `v0.4` | `v0.4.2` | The Wordflow-rename release line; `main` is stuck at v0.3.5 (legacy `ldaca-web-app` line) for back-compat consumers |
+| `ldaca_wordflow` | `v0.5` | `v0.5.6` | The active Wordflow release line; `main`, `dev`, and `v0.5` all track it (fast-forwarded each release — `dev` is the source of truth). `v0.4`/`v0.3` remain only for back-port hot-fixes / legacy consumers |
 | `ldaca_wordflow_docs` | `v0.4` | (continuously deployed via gh-pages) | Each minor version of Wordflow has a matching docs branch (`v0.3`, `v0.4`); Wordflow's `VITE_DOCS_BASE_URL` resolves to that branch's published path |
 | `ldaca-analytics-sample-data` | `main` | n/a | Single dataset catalogue, no versioning needed yet |
 
@@ -76,10 +76,10 @@ uv run pytest -q tests/
 ## Active release lines
 
 - **Wordflow** (formerly `ldaca-web-app`):
-  - `main` = `v0.3.5` (legacy, no multilingual, still published under `ldaca-web-app` only)
-  - `v0.4` = `v0.4.2` (active, post-rename release line — what users should install)
-  - Both lines coexist; `main` is parked, `v0.4` is the deploy target for Nectar VM and PyPI's `latest`.
-  - PyPI primary name: `ldaca-wordflow` from 0.4.2 onward. The one-shot legacy shim `ldaca-web-app==0.4.2` depends on `ldaca-wordflow==0.4.2` so `pip install ldaca-web-app` keeps resolving; future 0.5+ ships only to `ldaca-wordflow`. Defensive PyPI names `wordflows` and `ldaca-wordflow==0.3.5` are placeholder-only and not actively maintained.
+  - `v0.5` = `v0.5.6` (active release line — what users should install). `v0.4` (`v0.4.2`) and `v0.3` remain only for back-port hot-fixes / legacy consumers.
+  - `main`, `dev`, and `v0.5` all track the active release line — `dev` is the source of truth and the release branches fast-forward off it. The earlier practice of parking `main` (web app **and** backend) at the legacy `v0.3.5` line is **retired** as of v0.5.6; `main` now follows the current release. PyPI back-compat for the old name is handled by the `ldaca-web-app` shim package, not by `main`.
+  - `v0.5` is the deploy target for the Nectar VM and PyPI's `latest`.
+  - PyPI primary name: `ldaca-wordflow` from 0.4.2 onward. The one-shot legacy shim `ldaca-web-app==0.4.2` depends on `ldaca-wordflow==0.4.2` so `pip install ldaca-web-app` keeps resolving; 0.5+ ships only to `ldaca-wordflow`. Defensive PyPI names `wordflows` and `ldaca-wordflow==0.3.5` are placeholder-only and not actively maintained.
 - **Docs**: branches mirror Wordflow's minor lines. `v0.3` is the matching docs for the legacy line; `v0.4` is current. Each branch is published to `gh-pages` under `/v0.3/` and `/v0.4/` paths so Wordflow's runtime docs registry can fetch the right version.
 - **Sample data**: a single rolling catalogue at `main`. No version branches yet.
 
