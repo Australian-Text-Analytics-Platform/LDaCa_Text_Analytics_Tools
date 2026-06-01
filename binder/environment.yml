@@ -7,6 +7,11 @@ dependencies:
   - pip:
       - uv
       - jupyter_server_proxy
-      - ldaca-wordflow==0.5.5
+      # v0.5.6-test: install from source (unpublished) so Binder runs the
+      # combined test branch — unified docs /docs routing, Trends case-fold +
+      # detach-enable, dialog wrap, docs sync. The backend's hatch build hook
+      # extracts the committed build.tar.gz, so the freshly-bundled frontend
+      # ships in the wheel. Revert to `ldaca-wordflow==<version>` for release.
+      - ldaca-wordflow @ git+https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow-backend.git@v0.5.6-test
       - --extra-index-url https://download.pytorch.org/whl/cpu
       - torch
