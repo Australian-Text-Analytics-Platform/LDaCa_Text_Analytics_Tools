@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
-import time
 import urllib.error
 import urllib.request
 
@@ -27,46 +27,61 @@ def _quiet_logging() -> None:
         logging.getLogger(name).setLevel(logging.WARNING)
 
 
-def _wait_until_ready(probe_url: str, timeout: float, interval: float = 0.25) -> bool:
-    """Poll ``probe_url`` until the backend serves a non-5xx response.
+def _probe_once(probe_url: str) -> bool:
+    """One blocking readiness probe. ``True`` if the backend serves a non-5xx.
 
-    The backend binds its port a beat before its startup events finish
-    wiring the route table / static mounts (and, on a cold Binder, before
-    model prefetch settles). During that window the root request returns a
-    5xx — which is exactly the "500 : Internal Server Error" the auto-opened
-    tab lands on. A fixed sleep can't cover a variable cold start, so we wait
-    for an actual clean response instead.
+    A 4xx still means the app is up and routing; only a 5xx (or no connection
+    yet) means "startup not finished — keep waiting". Runs off the event loop
+    via ``asyncio.to_thread`` so the short blocking ``urlopen`` never stalls the
+    loop the server task lives on.
+    """
+    try:
+        with urllib.request.urlopen(probe_url, timeout=2) as resp:
+            return resp.status < 500
+    except urllib.error.HTTPError as exc:
+        return exc.code < 500
+    except (urllib.error.URLError, ConnectionError, OSError):
+        return False
+
+
+async def _await_until_ready(
+    probe_url: str, timeout: float, interval: float = 0.25
+) -> bool:
+    """Cooperatively poll ``probe_url`` until the backend serves a clean response.
+
+    CRUCIAL: ``start_server(background=True)`` runs the server as an
+    ``asyncio.Task`` on the *same* event loop that runs this notebook cell. A
+    blocking poll (``time.sleep`` + sync ``urlopen``) would starve that loop, so
+    the server task could never bind its port — the poll would then spin on
+    connection-refused until it timed out (this is the ~60s hang we fixed).
+    Here every wait yields control back to the loop (``await asyncio.sleep`` /
+    ``asyncio.to_thread``), letting the server task run and become ready —
+    typically within a fraction of a second.
 
     Returns ``True`` once ready, ``False`` if ``timeout`` elapses first (in
     which case the caller opens the tab anyway rather than hang forever).
     """
-    deadline = time.monotonic() + timeout
-    while time.monotonic() < deadline:
-        try:
-            with urllib.request.urlopen(probe_url, timeout=2) as resp:
-                if resp.status < 500:
-                    return True
-        except urllib.error.HTTPError as exc:
-            # A 4xx still means the app is up and routing; only 5xx means
-            # "startup not finished — keep waiting".
-            if exc.code < 500:
-                return True
-        except (urllib.error.URLError, ConnectionError, OSError):
-            pass  # not listening yet
-        time.sleep(interval)
+    loop = asyncio.get_event_loop()
+    deadline = loop.time() + timeout
+    while loop.time() < deadline:
+        if await asyncio.to_thread(_probe_once, probe_url):
+            return True
+        await asyncio.sleep(interval)
     return False
 
 
-def display_app_link(
-    port: int = 8001, startup_delay: float = 3.0, ready_timeout: float = 60.0
+async def display_app_link(
+    port: int = 8001, startup_delay: float = 0.0, ready_timeout: float = 30.0
 ) -> None:
     """Show a clickable link to open Wordflow, adapting to Binder/JupyterHub or local.
 
-    Waits at least ``startup_delay`` seconds and then until the backend
-    actually serves a clean response (up to ``ready_timeout``) before
-    auto-opening the new tab. Opening the moment the port binds races the
-    FastAPI startup and the first request lands on a 500 — so we probe the
-    in-container ``localhost`` root until it's genuinely ready.
+    Awaitable — call it as ``await display_app_link(port=PORT)`` from the
+    notebook cell. It waits until the backend actually serves a clean response
+    (up to ``ready_timeout``) before auto-opening the new tab, so the tab never
+    lands on the startup-race "500 : Internal Server Error". Because the wait is
+    cooperative (see ``_await_until_ready``), the background server task is free
+    to run while we wait, so readiness is reached almost immediately rather than
+    being blocked behind the poll.
     """
     _quiet_logging()
 
@@ -78,12 +93,13 @@ def display_app_link(
     else:
         url = f"http://localhost:{port}/"
 
-    # Minimum grace, then wait for real readiness. The user-facing URL may be
-    # a JupyterHub proxy path (relative + cookie-authed), so probe the backend
-    # directly on localhost — once that serves cleanly, the proxied tab will too.
+    # Optional minimum grace, then wait for real readiness. The user-facing URL
+    # may be a JupyterHub proxy path (relative + cookie-authed), so probe the
+    # backend directly on localhost — once that serves cleanly, the proxied tab
+    # will too.
     if startup_delay > 0:
-        time.sleep(startup_delay)
-    _wait_until_ready(f"http://localhost:{port}/", timeout=ready_timeout)
+        await asyncio.sleep(startup_delay)
+    await _await_until_ready(f"http://localhost:{port}/", timeout=ready_timeout)
 
     # Uvicorn finishes setup_logging during its first request; re-apply so any
     # later access-log records still respect WARNING.
