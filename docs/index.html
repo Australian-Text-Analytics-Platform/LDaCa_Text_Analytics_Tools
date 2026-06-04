@@ -202,6 +202,29 @@
   }
   body.lb-open { overflow: hidden; }
 
+  /* ---------- Workshops photo strip (auto-scrolling marquee) ---------- */
+  .ws-strip {
+    position: relative; overflow: hidden; margin-top: 10px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+  /* No flex `gap` here on purpose: spacing comes from each thumb's right margin so the
+     track width is an exact multiple of the cell width, making translateX(-50%) seamless. */
+  .ws-marquee { display: flex; width: max-content; animation: ws-scroll 40s linear infinite; }
+  .ws-strip:hover .ws-marquee { animation-play-state: paused; }
+  .ws-thumb {
+    flex: 0 0 auto; width: clamp(210px, 25vw, 300px); height: clamp(140px, 16vw, 190px);
+    margin-right: 16px;
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--rule);
+    box-shadow: var(--shadow); cursor: zoom-in; background: #eee9df;
+  }
+  .ws-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; }
+  .ws-thumb:hover img { transform: scale(1.06); }
+  @keyframes ws-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ws-marquee { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
+  }
+
   /* ---------- Run it (3 ways) ---------- */
   .ways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
   .way {
@@ -473,6 +496,17 @@
       students to senior academics, across faculties. No coding required.
     </p>
 
+    <!-- Auto-scrolling photo strip. Images are listed once, then duplicated by JS for a
+         seamless loop. Click a thumbnail to open the ~1280px version in the lightbox. -->
+    <div class="ws-strip">
+      <div class="ws-marquee" id="ws-marquee">
+        <div class="ws-thumb"><img src="assets/workshop/thumbs/ws1.jpg" data-full="assets/workshop/large/ws1.jpg" data-cap="Wordflow workshop — University of Sydney, 3 June 2026" alt="Participants at the Wordflow workshop"></div>
+        <div class="ws-thumb"><img src="assets/workshop/thumbs/ws2.jpg" data-full="assets/workshop/large/ws2.jpg" data-cap="Workshop group photo — University of Sydney, 3 June 2026" alt="Workshop group photo with the Sydney skyline"></div>
+        <div class="ws-thumb"><img src="assets/workshop/thumbs/ws3.jpg" data-full="assets/workshop/large/ws3.jpg" data-cap="Session 1.5 — 5 tools, 5 minutes each" alt="A workshop session in progress"></div>
+        <div class="ws-thumb"><img src="assets/workshop/thumbs/ws4.jpg" data-full="assets/workshop/large/ws4.jpg" data-cap="The interface tour — 7 things to know" alt="Walking through the Wordflow interface"></div>
+      </div>
+    </div>
+
     <div class="workshop-card">
       <div class="body">
         <span class="tag">Past workshop</span>
@@ -686,6 +720,18 @@
         open(im.src, im.alt, capEl ? capEl.textContent.trim() : '');
       });
     });
+
+    // Workshops photo strip: duplicate the thumbnails for a seamless loop, then make each clickable.
+    var marquee = document.getElementById('ws-marquee');
+    if (marquee) {
+      var originals = Array.prototype.slice.call(marquee.children);
+      originals.forEach(function (node) { marquee.appendChild(node.cloneNode(true)); });
+      marquee.querySelectorAll('img[data-full]').forEach(function (im) {
+        im.addEventListener('click', function () {
+          open(im.getAttribute('data-full'), im.alt, im.getAttribute('data-cap') || '');
+        });
+      });
+    }
 
     // A second click anywhere on the overlay (image, backdrop, or close) returns to the page.
     lb.addEventListener('click', close);
