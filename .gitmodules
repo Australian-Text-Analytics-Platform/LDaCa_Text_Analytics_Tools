@@ -1,7 +1,7 @@
 [submodule "ldaca_wordflow"]
 	path = ldaca_wordflow
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow.git
-	branch = v0.4
+	branch = dev
 [submodule "ldaca_wordflow_docs"]
 	path = ldaca_wordflow_docs
 	url = https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow-docs.git

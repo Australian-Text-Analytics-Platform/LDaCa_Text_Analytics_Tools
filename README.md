@@ -15,14 +15,21 @@ need a stable, versioned setup.
 
 ## Latest
 
-- Published (AEST): 2026-06-01
-- Package: `ldaca-wordflow@0.5.6` (in-app docs now refresh themselves from the docs site and work offline from a local cache — the same way on every platform — plus a Trends case-insensitive grouping fix and several desktop UI fixes — see "What's new" below)
-- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/1efb6c2?labpath=index.ipynb)
-- Desktop app (v0.5.6) — two installers:
-  - **First time? Download the full installer** (recommended) — it includes everything the app needs, so the first launch sets up without an internet connection (ready in seconds on Mac, a few minutes on Windows): [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-bundle-x64-0.5.6.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-bundle-apple-silicon-0.5.6.dmg)
-  - **Already have a previous version (v0.5.4 or later)? Download the lightweight installer** — a much smaller download that reuses what's already on your computer: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-slim-x64-0.5.6.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-slim-apple-silicon-0.5.6.dmg)
-  - The macOS app is signed by Apple. On Windows you may see a security prompt — choose "More info" → "Run anyway".
-- Run locally: `uvx --refresh ldaca-wordflow@0.5.6`
+- Published (AEST): 2026-07-27
+- Package: `ldaca-wordflow@0.7.0` (Data Block colouring, token-frequency result ordering, and double-click add — see "What's new" below)
+- Nectar BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/dev?labpath=index.ipynb)
+- Desktop app (v0.7.0) — bundled installers that include the backend runtime: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/LDaCA.Wordflow_0.7.0_x64_en-US.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/LDaCA.Wordflow_0.7.0_aarch64.dmg)
+  - The macOS app is Developer ID signed and notarized. On Windows you may see a security prompt — choose "More info" → "Run anyway".
+- Run locally: `uvx --refresh ldaca-wordflow@0.7.0`
+
+## What's new in v0.7.0 — Data Block colour, result ordering, and desktop release hardening
+
+- **Data Block colouring** makes workspace items easier to distinguish visually.
+- **Token-frequency result ordering** gives frequency results a consistent, useful order.
+- **Double-click add** provides a quicker way to add a Data Block to an analysis.
+- **Desktop distribution is simpler and more trustworthy:** each platform has one bundled installer, and the macOS app is Developer ID signed and notarized.
+
+See the [v0.7.0 release](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/tag/v0.7.0) and [full changelog](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/compare/v0.5.6...v0.7.0) for details.
 
 ## What's new in v0.5.6 — Self-refreshing in-app docs + Trends grouping fix
 
@@ -59,6 +66,7 @@ See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platfo
 
 | Published (AEST) | Version | Nectar BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
+| 2026-07-27 | `0.7.0` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/dev?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/LDaCA.Wordflow_0.7.0_x64_en-US.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/LDaCA.Wordflow_0.7.0_aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.0` |
 | 2026-06-01 | `0.5.6` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/1efb6c2?labpath=index.ipynb) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-bundle-x64-0.5.6.msi) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-slim-x64-0.5.6.msi) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-bundle-apple-silicon-0.5.6.dmg) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.6/ldaca-wordflow-slim-apple-silicon-0.5.6.dmg) | `uvx --refresh ldaca-wordflow@0.5.6` |
 | 2026-05-27 | `0.5.5` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/c2cb50e?labpath=index.ipynb) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-x64-0.5.5.msi) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-x64-0.5.5.msi) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-bundle-apple-silicon-0.5.5.dmg) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.5/ldaca-wordflow-slim-apple-silicon-0.5.5.dmg) | `uvx --refresh ldaca-wordflow@0.5.5` |
 | 2026-05-25 | `0.5.4` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/af696f9?labpath=index.ipynb) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-x64-0.5.4.msi) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-x64-0.5.4.msi) | [Full](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-bundle-apple-silicon-0.5.4.dmg) / [Lite](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.5.4/ldaca-wordflow-slim-apple-silicon-0.5.4.dmg) | `uvx --refresh ldaca-wordflow@0.5.4` |
