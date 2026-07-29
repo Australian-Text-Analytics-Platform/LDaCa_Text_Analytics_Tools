@@ -3,16 +3,71 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 import urllib.error
 import urllib.request
+from urllib.parse import urlsplit
 
 # Silence huggingface_hub's tqdm progress bars before the backend's
 # model_prefetch fires. In Jupyter, hf_hub auto-selects tqdm.notebook
 # whose __del__ path crashes when bars are built off the main thread —
 # the downloads succeed, but the tracebacks land in the cell output.
 os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+
+
+def _public_hub_hosts() -> set[str]:
+    """Collect the hub's public hostname(s) from Binder/JupyterHub env vars."""
+
+    hosts: set[str] = set()
+    for var in (
+        "BINDER_LAUNCH_HOST",
+        "JUPYTERHUB_PUBLIC_URL",
+        "JUPYTERHUB_PUBLIC_HUB_URL",
+        "JUPYTERHUB_HOST",
+    ):
+        raw = os.environ.get(var, "").strip()
+        if not raw:
+            continue
+        host = urlsplit(raw).hostname if "://" in raw else raw.split(":")[0]
+        if host:
+            hosts.add(host.casefold().rstrip("."))
+    return hosts
+
+
+def _allow_hub_host() -> None:
+    """Extend the backend's Host/Origin allowlists with the hub's public host.
+
+    Wordflow v0.7 rejects requests whose Host header is not allowlisted
+    (``ExactHostMiddleware``, default: localhost only) and unsafe requests
+    whose Origin does not match the request origin (``CsrfOriginMiddleware``).
+    jupyter-server-proxy forwards the browser's original Host and Origin —
+    the hub's public hostname — so the proxied app would answer every request
+    with ``host_not_allowed``. Both allowlists come from settings env vars,
+    which must be in place before ``start_async_server()`` loads settings;
+    importing this module (before launch, as the notebook does) is enough.
+    Pre-set TRUSTED_HOSTS / CORS_ALLOWED_ORIGINS always win. Outside
+    Binder/JupyterHub no env vars match and this is a no-op.
+    """
+
+    hosts = _public_hub_hosts()
+    if not hosts:
+        return
+    if "TRUSTED_HOSTS" not in os.environ:
+        os.environ["TRUSTED_HOSTS"] = json.dumps(
+            sorted({"localhost", "127.0.0.1", "::1"} | hosts)
+        )
+    if "CORS_ALLOWED_ORIGINS" not in os.environ:
+        # The hub terminates TLS; the backend may see the proxied request as
+        # plain http, so the browser's https Origin must be allowlisted
+        # explicitly rather than relying on the same-origin comparison.
+        os.environ["CORS_ALLOWED_ORIGINS"] = json.dumps(
+            sorted(f"https://{host}" for host in hosts)
+        )
+
+
+_allow_hub_host()
 
 
 def _quiet_logging() -> None:
