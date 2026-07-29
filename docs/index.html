@@ -18,9 +18,9 @@
   ----------------
   This landing page hard-codes the current release version + download links.
   When a new Wordflow version ships, update the strings tagged with a "VERSION" comment below
-  (search for "0.7.1", the desktop version "0.7.0", and the Binder commit SHA "cb44413").
-  Everything else is static. Note the desktop and PyPI versions can differ: v0.7.1 shipped to
-  PyPI only, so the desktop chips stay on the v0.7.0 installers until new ones are published.
+  (search for "0.7.1" and the Binder commit SHA "cb44413"). Everything else is static.
+  If the desktop installers for a release lag the PyPI wheel, keep the desktop chips on the
+  newest release that actually has installer assets.
   Asset paths are RELATIVE on purpose — the page is served from a /LDaCa_Text_Analytics_Tools/
   subpath on GitHub Pages, so leading-slash paths would break.
 -->
@@ -358,7 +358,7 @@
 <header class="nav">
   <div class="wrap nav-inner">
     <a class="brand" href="#top">
-      <img src="assets/brand/ldaca-logo.png" alt="LDaCA">
+      <img src="assets/brand/ldaca-logo-simplified-dark.svg" alt="LDaCA">
       <span class="sep">·</span>
       <span>Wordflow</span>
     </a>
@@ -378,7 +378,7 @@
 <a id="top"></a>
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow"><img src="assets/brand/ldaca-logo.png" alt="LDaCA"> Language Data Commons of Australia</span>
+    <span class="eyebrow"><img src="assets/brand/ldaca-logo-simplified-light.svg" alt="LDaCA"> Language Data Commons of Australia</span>
     <h1>LDaCA Wordflow</h1>
     <div class="tagline">A code-free interface for text analytics</div>
     <p class="intro">
@@ -396,7 +396,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
         Download the desktop app
       </a>
-      <span class="version-pill"><span class="dot"></span> Latest release <a href="https://pypi.org/project/ldaca-wordflow/0.7.1/" target="_blank" rel="noopener"><!-- VERSION -->v0.7.1</a></span>
+      <span class="version-pill"><span class="dot"></span> Latest release <a href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener"><!-- VERSION -->v0.7.1</a></span>
     </div>
   </div>
 </section>
@@ -488,10 +488,10 @@
         <h4>Desktop app</h4>
         <div class="sub">Mac &amp; Windows · runs on your machine</div>
         <p class="grow">A native installer that bundles everything, including the backend runtime — it all runs locally, so your data never leaves your computer. Recommended for serious work.</p>
-        <!-- VERSION: desktop installer links pinned to the latest desktop release (v0.7.0 — v0.7.1 shipped to PyPI only) -->
+        <!-- VERSION: desktop installer links pinned to the current release -->
         <div class="way-links">
-          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/ldaca-wordflow_0.7.0_darwin-aarch64.dmg">macOS (Apple Silicon)</a>
-          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.0/ldaca-wordflow_0.7.0_windows-x86_64.msi">Windows</a>
+          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.1/ldaca-wordflow_0.7.1_darwin-aarch64.dmg">macOS (Apple Silicon)</a>
+          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.1/ldaca-wordflow_0.7.1_windows-x86_64.msi">Windows</a>
         </div>
         <div class="way-links">
           <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener">All releases →</a>
