@@ -59,9 +59,14 @@ def _patch_baked_api_base() -> None:
     )
     if not assets.is_dir():
         return
+    # The constant lands in a different chunk per release (env-*.js in 0.7.0,
+    # compiler-runtime-*.js in 0.7.1), so sweep every chunk.
     baked = "http://localhost:8001/api"
-    for bundle in assets.glob("env-*.js"):
-        text = bundle.read_text(encoding="utf-8")
+    for bundle in assets.glob("*.js"):
+        try:
+            text = bundle.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue  # the wheel ships macOS "._*" AppleDouble files
         patched = text
         for quote in ("`", "'", '"'):
             patched = patched.replace(f"{quote}{baked}{quote}", quote * 2)
