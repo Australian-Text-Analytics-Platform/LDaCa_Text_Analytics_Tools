@@ -4,7 +4,9 @@ channels:
 dependencies:
   # 3.14.5+ required: earlier 3.14.x cannot evaluate `X | Y | "Fwd"` string
   # unions, so pydantic fails to import ldaca_wordflow's provenance models.
-  - python >=3.14.5,<3.15
+  # Keep the exact `python=X.Y.Z` form — repo2docker's version detection
+  # does not understand range specs and silently falls back to its default.
+  - python=3.14.5
   - pip
   - pip:
       - uv
