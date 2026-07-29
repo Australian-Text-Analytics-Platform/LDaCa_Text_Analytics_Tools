@@ -79,9 +79,15 @@ async def _sniff_forwarded_host(timeout: float) -> tuple[str, str] | None:
         finally:
             writer.close()
         host = urlsplit(f"//{headers.get('host', '')}").hostname
+        # X-Forwarded-Proto may list one entry per proxy hop
+        # ("https,http" on Nectar); the first is the browser-facing scheme.
+        scheme = headers.get("x-forwarded-proto", "").split(",")[0].strip().casefold()
         if host and not result.done():
             result.set_result(
-                (host.casefold().rstrip("."), headers.get("x-forwarded-proto", "https"))
+                (
+                    host.casefold().rstrip("."),
+                    scheme if scheme in {"http", "https"} else "https",
+                )
             )
 
     server = await asyncio.start_server(handle, "127.0.0.1", 0)
