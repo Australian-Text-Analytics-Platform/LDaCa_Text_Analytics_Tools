@@ -11,7 +11,7 @@ dependencies:
   - pip:
       - uv
       - jupyter_server_proxy
-      - ldaca-wordflow==0.7.0
+      - ldaca-wordflow==0.7.1
       - pydantic>=2.13.4
       - --extra-index-url https://download.pytorch.org/whl/cpu
       - torch
