@@ -8,6 +8,7 @@ import logging
 import os
 import urllib.error
 import urllib.request
+from pathlib import Path
 from urllib.parse import urlsplit
 
 # Silence huggingface_hub's tqdm progress bars before the backend's
@@ -34,6 +35,42 @@ def _public_hub_hosts() -> set[str]:
         if host:
             hosts.add(host.casefold().rstrip("."))
     return hosts
+
+
+def _patch_baked_api_base() -> None:
+    """Blank the localhost API base baked into the 0.7.0 frontend bundle.
+
+    The published wheel's SPA was built with
+    ``VITE_BACKEND_API_BASE=http://localhost:8001/api`` left over from a dev
+    environment. In the frontend's URL resolution that build-time override
+    outranks the runtime ``basePath`` injection that handles reverse-proxy
+    serving, so behind a hub proxy the app polls the *viewer's* machine
+    (net::ERR_CONNECTION_REFUSED on /health). Blanking the constant lets the
+    bundle fall through to the runtime-config base path. Idempotent, and a
+    no-op once a fixed wheel ships or when Wordflow is not installed.
+    """
+
+    try:
+        import ldaca_wordflow
+    except ImportError:
+        return
+    assets = (
+        Path(ldaca_wordflow.__file__).parent / "resources" / "frontend" / "build" / "assets"
+    )
+    if not assets.is_dir():
+        return
+    baked = "http://localhost:8001/api"
+    for bundle in assets.glob("env-*.js"):
+        text = bundle.read_text(encoding="utf-8")
+        patched = text
+        for quote in ("`", "'", '"'):
+            patched = patched.replace(f"{quote}{baked}{quote}", quote * 2)
+        if patched != text:
+            bundle.write_text(patched, encoding="utf-8")
+            print(f"Patched baked dev API base out of {bundle.name}.")
+
+
+_patch_baked_api_base()
 
 
 # Exposed for tests: the ephemeral sniffer port while a sniff is in flight.
