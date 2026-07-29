@@ -2,11 +2,14 @@ name: ldaca-binder
 channels:
   - conda-forge
 dependencies:
-  - python=3.14
+  # 3.14.5+ required: earlier 3.14.x cannot evaluate `X | Y | "Fwd"` string
+  # unions, so pydantic fails to import ldaca_wordflow's provenance models.
+  - python >=3.14.5,<3.15
   - pip
   - pip:
       - uv
       - jupyter_server_proxy
       - ldaca-wordflow==0.7.0
+      - pydantic>=2.13.4
       - --extra-index-url https://download.pytorch.org/whl/cpu
       - torch

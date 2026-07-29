@@ -18,9 +18,9 @@ os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
 def _quiet_logging() -> None:
     """Suppress backend + uvicorn INFO output so the launcher cell stays clean.
 
-    Uvicorn rebuilds its logging config on start_server() with log_level="info",
-    which would otherwise overwrite any pre-set level on the uvicorn loggers,
-    so we call this once after start_server has had a chance to initialize.
+    Uvicorn rebuilds its logging config with log_level="info" when the server
+    starts, which would otherwise overwrite any pre-set level on the uvicorn
+    loggers, so we call this once after start_async_server has returned.
     """
     logging.disable(logging.INFO)
     for name in ("uvicorn", "uvicorn.access", "uvicorn.error", "ldaca_wordflow"):
@@ -49,14 +49,14 @@ async def _await_until_ready(
 ) -> bool:
     """Cooperatively poll ``probe_url`` until the backend serves a clean response.
 
-    CRUCIAL: ``start_server(background=True)`` runs the server as an
-    ``asyncio.Task`` on the *same* event loop that runs this notebook cell. A
-    blocking poll (``time.sleep`` + sync ``urlopen``) would starve that loop, so
-    the server task could never bind its port — the poll would then spin on
-    connection-refused until it timed out (this is the ~60s hang we fixed).
+    CRUCIAL: ``start_async_server()`` runs the server as an ``asyncio.Task``
+    on the *same* event loop that runs this notebook cell. A blocking poll
+    (``time.sleep`` + sync ``urlopen``) would starve that loop, so the server
+    task could never answer — the poll would then spin until it timed out.
     Here every wait yields control back to the loop (``await asyncio.sleep`` /
-    ``asyncio.to_thread``), letting the server task run and become ready —
-    typically within a fraction of a second.
+    ``asyncio.to_thread``), letting the server task respond. Since v0.7 the
+    launcher only returns after startup completes, so the first probe normally
+    succeeds immediately; this remains as a belt-and-braces check.
 
     Returns ``True`` once ready, ``False`` if ``timeout`` elapses first (in
     which case the caller opens the tab anyway rather than hang forever).
