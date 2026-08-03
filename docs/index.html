@@ -289,6 +289,17 @@
   .workshop-card h4 { font-size: 1.4rem; margin-bottom: 0.3em; }
   .workshop-card p { color: #43474f; max-width: 46em; }
   .workshop-card .meta { color: var(--muted); font-size: 0.9rem; margin-top: 0.4em; }
+  /* Past workshops live in a capped, scrollable stack (~3 cards tall) so the
+     section stays compact as deliveries accumulate. Upcoming cards sit above
+     it, outside the scroll, and are always visible. Anchor-linked cards use
+     scroll-margin so deep links land clear of the sticky header. */
+  .workshop-past {
+    max-height: 860px; overflow-y: auto; margin-top: 8px;
+    padding-right: 6px; scrollbar-width: thin;
+  }
+  .workshop-past .workshop-card { margin-top: 28px; }
+  .workshop-past .workshop-card:first-child { margin-top: 0; }
+  .workshop-card[id], .workshop-past { scroll-margin-top: 90px; }
 
   /* ---------- Team ---------- */
   .team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 42px; }
@@ -533,7 +544,7 @@
       </div>
     </div>
 
-    <div class="workshop-card">
+    <div class="workshop-card" id="ws-online-2026-08-28">
       <div class="body">
         <span class="tag">Upcoming · online</span>
         <h4>Text analytics without code: teach the AI your codebook</h4>
@@ -550,30 +561,38 @@
       </div>
     </div>
 
-    <div class="workshop-card">
-      <div class="body">
-        <span class="tag">Past workshop</span>
-        <h4>Coding text with GenAI: the Annotation tool</h4>
-        <p>
-          A 45-minute hands-on at the CAITG (Centre for AI, Trust and Governance) Winter School:
-          participants coded a real dataset with an AI model of their choice, then checked its
-          work with intercoder reliability and a confusion matrix.
-        </p>
-        <p class="meta">30 July 2026 · CAITG Winter School, University of Sydney</p>
+    <!-- Past workshops: newest first. This stack is height-capped and scrolls
+         once it outgrows ~3 cards; per-card ids allow deep links from posts
+         and emails. Each card links to its entry on the workshop-series page. -->
+    <div class="workshop-past">
+      <div class="workshop-card" id="ws-caitg-2026-07-30">
+        <div class="body">
+          <span class="tag">Past workshop</span>
+          <h4>Coding text with GenAI: the Annotation tool</h4>
+          <p>
+            A 45-minute hands-on at the CAITG (Centre for AI, Trust and Governance) Winter School:
+            participants coded a real dataset with an AI model of their choice, then checked its
+            work with intercoder reliability and a confusion matrix.
+          </p>
+          <p class="meta">30 July 2026 · CAITG Winter School, University of Sydney</p>
+          <div class="way-links">
+            <a class="chip" href="https://milysun.github.io/wordflow-workshop/#caitg_winter_school_2026-07-30" target="_blank" rel="noopener">Workshop materials →</a>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="workshop-card">
-      <div class="body">
-        <span class="tag">Past workshop</span>
-        <h4>Wordflow in 3 hours</h4>
-        <p>
-          A 3-hour intro: a tour of all five analysis tools, one real multi-tool research workflow
-          from raw data to findings, and a free hands-on lab. Run by the Sydney Informatics Hub.
-        </p>
-        <p class="meta">First delivered 3 June 2026 · University of Sydney</p>
-        <div class="way-links">
-          <a class="chip" href="https://sih.tools/wordflow" target="_blank" rel="noopener">Workshop materials &amp; launch →</a>
+      <div class="workshop-card" id="ws-intro-2026-06-03">
+        <div class="body">
+          <span class="tag">Past workshop</span>
+          <h4>Wordflow in 3 hours</h4>
+          <p>
+            A 3-hour intro: a tour of all five analysis tools, one real multi-tool research workflow
+            from raw data to findings, and a free hands-on lab. Run by the Sydney Informatics Hub.
+          </p>
+          <p class="meta">First delivered 3 June 2026 · University of Sydney</p>
+          <div class="way-links">
+            <a class="chip" href="https://milysun.github.io/wordflow-workshop/#intro_workshop_2026-06-03" target="_blank" rel="noopener">Workshop materials →</a>
+          </div>
         </div>
       </div>
     </div>
