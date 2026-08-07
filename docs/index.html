@@ -315,6 +315,46 @@
   .member .socials a:hover { color: var(--accent); }
   .member .socials svg { width: 18px; height: 18px; }
   .team-foot { text-align: center; color: var(--muted); font-size: 0.92rem; margin-top: 34px; max-width: 56em; margin-left: auto; margin-right: auto; }
+  /* Bio tooltip: a card that appears when hovering (or keyboard-focusing) a
+     member's photo. Pure CSS; hidden from touch/mobile where hover doesn't
+     exist, which is fine for a nice-to-have. */
+  .member { position: relative; }
+  .member .bio-tip {
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    width: min(400px, 86vw);
+    background: var(--ink, #1a1d24);
+    color: #fdfcf8;
+    text-align: left;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(26, 29, 36, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: none;
+    z-index: 30;
+  }
+  .member .bio-tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 9px solid transparent;
+    border-top-color: var(--ink, #1a1d24);
+  }
+  .member img:hover ~ .bio-tip,
+  .member img:focus-visible ~ .bio-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  .member.has-bio img { cursor: help; }
 
   /* ---------- Citation ---------- */
   .cite-box {
@@ -606,8 +646,9 @@
     <h3 class="section-head">The people behind Wordflow.</h3>
 
     <div class="team">
-      <div class="member">
-        <img src="assets/team/chao-sun.jpg" alt="Dr Chao Sun">
+      <div class="member has-bio">
+        <img src="assets/team/chao-sun.jpg" alt="Dr Chao Sun" tabindex="0">
+        <div class="bio-tip" role="tooltip">Dr Chao Sun is a Data Science Group Lead at the Sydney Informatics Hub, University of Sydney, and an analytics tech lead for the Language Data Commons of Australia (LDaCA), an ARDC co-investment partnership. He spent 2016 to 2019 as the Faculty of Arts and Social Sciences' sole data scientist and has worked with humanities and social science researchers ever since, teaching data skills to hundreds of HASS researchers along the way. Since 2022 he has led the development of LDaCA's text analytics tools, including LDaCA Wordflow and its new GenAI Annotation tool. His background spans electronics engineering (BS) and machine learning (MS, PhD).</div>
         <div class="name">Dr Chao Sun</div>
         <div class="role">Project tech lead · Sydney Informatics Hub</div>
         <!-- Short bios can be added per developer later. -->
