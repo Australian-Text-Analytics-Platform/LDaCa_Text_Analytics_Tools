@@ -22,6 +22,14 @@ need a stable, versioned setup.
   - The macOS app is Developer ID signed and notarized. On Windows you may see a security prompt — choose "More info" → "Run anyway".
 - Run locally: `uvx --refresh ldaca-wordflow@0.7.1`
 
+## Binder launch
+
+The Binder image installs the pinned `ldaca-wordflow[deploy]` release, which
+includes Jupyter Server Proxy support. Run `index.ipynb` to start one loopback
+Wordflow server on port `8001`; the notebook displays its authenticated proxy
+link and includes a shutdown cell. Binder storage is session-scoped unless the
+operator provides a persistent mount and `DATA_ROOT` points into it.
+
 ## What's new in v0.7.0 — Data Block colour, result ordering, and desktop release hardening
 
 - **Data Block colouring** makes workspace items easier to distinguish visually.
