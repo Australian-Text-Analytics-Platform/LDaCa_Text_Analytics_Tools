@@ -28,7 +28,10 @@
             // ``python -m uvicorn`` sidesteps both issues — it uses
             // the venv's python (resolved via .venv/bin/python symlink)
             // and finds uvicorn from that venv's site-packages.
-            "command": ".venv/bin/python -m uvicorn ldaca_wordflow.main:app --reload --port 8001",
+            // v0.6 removed the ``main:app`` module entry point
+            // (``ImportError: cannot import name 'app'``); the ASGI app is
+            // now exposed via the factory module ``ldaca_wordflow.asgi:app``.
+            "command": ".venv/bin/python -m uvicorn ldaca_wordflow.asgi:app --reload --port 8001",
             "options": {
                 "cwd": "${workspaceFolder}/ldaca_wordflow/backend",
                 "env": {
@@ -36,7 +39,12 @@
                     // Override the master-venv activation so any
                     // subprocess (uv tooling, pip, etc.) that reads
                     // VIRTUAL_ENV sees the backend's venv.
-                    "VIRTUAL_ENV": "${workspaceFolder}/ldaca_wordflow/backend/.venv"
+                    "VIRTUAL_ENV": "${workspaceFolder}/ldaca_wordflow/backend/.venv",
+                    // v0.6 backend is secure-by-default: CORS is empty unless
+                    // set, so the frontend's /health probe fails with "Failed
+                    // to fetch". Must be a JSON array (pydantic parses it as
+                    // JSON; comma-separated string form fails to parse).
+                    "CORS_ALLOWED_ORIGINS": "[\"http://localhost:3000\",\"http://127.0.0.1:3000\"]"
                 }
             },
             "problemMatcher": [],
@@ -54,7 +62,10 @@
         {
             "label": "Start Frontend",
             "type": "shell",
-            "command": "npm run dev",
+            // v0.6 frontend is a pnpm workspace; ``npm run dev`` serves a
+            // stale bundle. Pin pnpm via npx so the task doesn't depend on a
+            // global pnpm install.
+            "command": "npx --yes pnpm@11.1.2 dev",
             "options": {
                 "cwd": "${workspaceFolder}/ldaca_wordflow/frontend"
             },
