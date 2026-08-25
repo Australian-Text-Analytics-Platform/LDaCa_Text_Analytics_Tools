@@ -25,7 +25,7 @@ LDaCA-Text-Analytics-Tools/             ← THIS REPO (master)
 
 | Submodule | Tracks branch | Production tag | Why this branch |
 |---|---|---|---|
-| `ldaca_wordflow` | `dev` | `v0.7.1` | `dev` is the integration source of truth; Binder still installs an exact published release from `binder/environment.yml` |
+| `ldaca_wordflow` | `main` | `v0.7.1` | `main` (renamed from `dev` on 2026-08-25; the old `main` was deleted) is the integration source of truth; Binder still installs an exact published release from `binder/environment.yml` |
 
 Wordflow contains the `ldaca-wordflow-docs`, `ldaca-analytics-sample-data`, `polars-text`, and `polars-source-utils` submodules. When working from this master repo, `git submodule update --init --recursive` walks that tree.
 
@@ -33,7 +33,7 @@ Wordflow contains the `ldaca-wordflow-docs`, `ldaca-analytics-sample-data`, `pol
 
 You will almost always be making changes inside ONE submodule. The master repo's job is to record which SHA of that submodule the production Binder + landing page should use. Workflow:
 
-1. **`cd ldaca_wordflow` to make Wordflow changes.** Use its `dev` branch, commit, and push to its `origin`. The submodule has its own CI, tests, and release workflow.
+1. **`cd ldaca_wordflow` to make Wordflow changes.** Use its `main` branch (the former `dev`, renamed 2026-08-25), commit, and push to its `origin`. The submodule has its own CI, tests, and release workflow.
 2. **Return to the master root** and `git add <submodule>` to capture the new pointer. Commit with a short message like `Bump ldaca_wordflow submodule for <reason>`. Push.
 
 ### gh CLI conventions
@@ -53,7 +53,7 @@ git submodule sync --recursive
 git submodule update --init --recursive --checkout --force
 
 # Work on the Wordflow integration branch inside the submodule
-git -C ldaca_wordflow checkout dev
+git -C ldaca_wordflow checkout main
 # … make changes, commit, tag, push from inside the submodule
 # … then come back here and bump the pointer
 
@@ -67,7 +67,7 @@ uv run pytest -q tests/
 
 ## Active release lines
 
-- **Wordflow** (formerly `ldaca-web-app`): `dev` is the integration source of truth and `v0.7.1` is the current published release pinned by this Binder repository.
+- **Wordflow** (formerly `ldaca-web-app`): `main` (the former `dev`, renamed 2026-08-25) is the integration source of truth and `v0.7.1` is the current published release pinned by this Binder repository.
 - **Docs and sample data**: owned and pinned by Wordflow. Do not add duplicate top-level submodules here.
 
 ## What lives where (so you don't grep blindly)
