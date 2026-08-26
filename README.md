@@ -25,10 +25,14 @@ need a stable, versioned setup.
 ## Binder launch
 
 The Binder image installs the pinned `ldaca-wordflow[deploy]` release, which
-includes Jupyter Server Proxy support. Run `index.ipynb` to start one loopback
-Wordflow server on port `8001`; the notebook displays its authenticated proxy
-link and includes a shutdown cell. Binder storage is session-scoped unless the
-operator provides a persistent mount and `DATA_ROOT` points into it.
+includes Jupyter Server Proxy support. Run `index.ipynb` to start the packaged
+frontend and backend together on loopback port `8001`; the notebook displays
+its authenticated `/proxy/8001/` link and includes a shutdown cell. Changing
+the notebook's `PORT` to `3000` produces the corresponding `/proxy/3000/` URL.
+The notebook computes that deployment path and passes it to Wordflow as a
+generic ASGI `root_path`; Wordflow itself does not infer JupyterHub settings.
+Binder storage is session-scoped unless the operator provides a persistent
+mount and `DATA_ROOT` points into it.
 
 ## What's new in v0.7.5: Trends filtering and selection blocks, unified Annotation comparisons, desktop hardening
 
@@ -133,3 +137,16 @@ The DOI above is the **concept DOI** — it always resolves to the latest versio
 ```bash
 uvx --refresh ldaca-wordflow@latest
 ```
+
+For source development with hot reload, run the backend and Vite separately.
+The backend task uses the exact development allowlist below so either loopback
+frontend hostname works without enabling wildcard CORS:
+
+```bash
+cd ldaca_wordflow/backend
+CORS_ALLOWED_ORIGINS='["http://localhost:3000","http://127.0.0.1:3000"]' \
+  .venv/bin/python -m uvicorn ldaca_wordflow.main:app --reload --port 8001
+```
+
+Run the repository's `Start Frontend` task separately for Vite on port `3000`.
+The backend-only process does not start or supervise Vite.

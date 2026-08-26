@@ -35,6 +35,7 @@
             "options": {
                 "cwd": "${workspaceFolder}/ldaca_wordflow/backend",
                 "env": {
+                    "CORS_ALLOWED_ORIGINS": "[\"http://localhost:3000\",\"http://127.0.0.1:3000\"]",
                     "PYTHONPATH": "${workspaceFolder}/ldaca_wordflow/backend/src",
                     // Override the master-venv activation so any
                     // subprocess (uv tooling, pip, etc.) that reads
