@@ -15,9 +15,9 @@ need a stable, versioned setup.
 
 ## Latest
 
-- Published (AEST): 2026-09-02
+- Published (AEST): 2026-09-03
 - Package: `ldaca-wordflow@0.7.7` (ECharts word clouds, Liquid Glass desktop styling, and workspace schema versioning; see "What's new" below)
-- ARDC BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/20fff5f?labpath=index.ipynb) (the 0.7.7 Binder pin is in progress; this launch currently runs 0.7.6)
+- ARDC BinderHub: [![Binder](https://mybinder.org/badge_logo.svg)](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/7364496?labpath=index.ipynb)
 - Desktop app — bundled installers that include the backend runtime: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_windows-x86_64.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_darwin-aarch64.dmg)
   - The macOS app is Developer ID signed and notarized. On Windows you may see a security prompt — choose "More info" → "Run anyway".
 - Run locally: `uvx --refresh ldaca-wordflow@0.7.7`
@@ -118,7 +118,7 @@ See the [wordflow CHANGELOG](https://github.com/Australian-Text-Analytics-Platfo
 
 | Published (AEST) | Version | ARDC BinderHub | Tauri Windows | Tauri macOS | Local command |
 | --- | --- | --- | --- | --- | --- |
-| 2026-09-02 | `0.7.7` | pin in progress | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_windows-x86_64.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_darwin-aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.7` |
+| 2026-09-03 | `0.7.7` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/7364496?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_windows-x86_64.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_darwin-aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.7` |
 | 2026-08-28 | `0.7.6` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/20fff5f?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.6/ldaca-wordflow_0.7.6_windows-x86_64.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.6/ldaca-wordflow_0.7.6_darwin-aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.6` |
 | 2026-08-28 | `0.7.5` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/f3a7edd?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.5/ldaca-wordflow_0.7.5_windows-x86_64.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.5/ldaca-wordflow_0.7.5_darwin-aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.5` |
 | 2026-08-19 | `0.7.2` | [Open notebook](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/019a84a?labpath=index.ipynb) | [MSI](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.2/ldaca-wordflow_0.7.2_windows-x86_64.msi) | [DMG (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.2/ldaca-wordflow_0.7.2_darwin-aarch64.dmg) | `uvx --refresh ldaca-wordflow@0.7.2` |

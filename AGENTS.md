@@ -25,7 +25,7 @@ LDaCA-Text-Analytics-Tools/             ← THIS REPO (master)
 
 | Submodule | Tracks branch | Production tag | Why this branch |
 |---|---|---|---|
-| `ldaca_wordflow` | `main` | `v0.7.6` | `main` (renamed from `dev` on 2026-08-25; the old `main` was deleted) is the integration source of truth; Binder installs an exact published release from `binder/environment.yml` |
+| `ldaca_wordflow` | `main` | `v0.7.7` | `main` (renamed from `dev` on 2026-08-25; the old `main` was deleted) is the integration source of truth; Binder installs an exact published release from `binder/environment.yml` |
 
 Wordflow contains the `ldaca-wordflow-docs`, `ldaca-analytics-sample-data`, `polars-text`, and `polars-source-utils` submodules. When working from this master repo, `git submodule update --init --recursive` walks that tree.
 
@@ -67,7 +67,7 @@ uv run pytest -q tests/
 
 ## Active release lines
 
-- **Wordflow** (formerly `ldaca-web-app`): `main` (the former `dev`, renamed 2026-08-25) is the integration source of truth and `v0.7.6` is the current published release pinned by this Binder repository.
+- **Wordflow** (formerly `ldaca-web-app`): `main` (the former `dev`, renamed 2026-08-25) is the integration source of truth and `v0.7.7` is the current published release pinned by this Binder repository.
 - **Docs and sample data**: owned and pinned by Wordflow. Do not add duplicate top-level submodules here.
 
 ## What lives where (so you don't grep blindly)
