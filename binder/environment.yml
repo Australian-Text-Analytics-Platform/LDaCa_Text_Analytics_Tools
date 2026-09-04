@@ -10,7 +10,7 @@ dependencies:
   - pip
   - pip:
       - uv
-      - ldaca-wordflow[deploy]==0.7.6
+      - ldaca-wordflow[deploy]==0.7.7
       - pydantic>=2.13.4
       - --extra-index-url https://download.pytorch.org/whl/cpu
       - torch
