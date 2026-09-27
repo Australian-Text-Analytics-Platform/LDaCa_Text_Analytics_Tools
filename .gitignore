@@ -23,11 +23,12 @@ node_modules/
 .vscode/*
 !.vscode/tasks.json
 
-# Local-only PyPI placeholder/shim build dirs (see PLACEHOLDER_PYPI_PLAN.md / RENAME_PLAN.md)
-_pypi_placeholders/
 # Local Continue AI rules (not shared with collaborators)
 .continue/
 
 # Internal dev audit artifacts — keep local, do not commit
 WORDFLOW_AUDIT_*.md
 audit-plan.md
+
+# Retired local Wordflow checkout is no longer a Binder submodule.
+/ldaca_wordflow/

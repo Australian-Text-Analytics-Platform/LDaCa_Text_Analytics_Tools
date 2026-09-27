@@ -9,21 +9,12 @@
 
 <!-- Open Graph / link previews -->
 <meta property="og:title" content="LDaCA Wordflow — a code-free interface for text analytics">
-<meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or from Python.">
+<meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or as a native server.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/shots/overview.png">
 
-<!--
-  MAINTENANCE NOTE
-  ----------------
-  This landing page hard-codes the current release version + download links.
-  When a new Wordflow version ships, update the strings tagged with a "VERSION" comment below
-  (search for "0.7.7" and the Binder commit SHA tagged with "VERSION"). Everything else is static.
-  If the desktop installers for a release lag the PyPI wheel, keep the desktop chips on the
-  newest release that actually has installer assets.
-  Asset paths are RELATIVE on purpose — the page is served from a /LDaCa_Text_Analytics_Tools/
-  subpath on GitHub Pages, so leading-slash paths would break.
--->
+<!-- Release links use stable filenames under GitHub's latest release. Binder
+     tracks this repository's current notebook and resolves its own release. -->
 
 <style>
   :root {
@@ -438,8 +429,8 @@
       analysis comes from how you shape your data, not from which tool you click.
     </p>
     <div class="hero-cta">
-      <!-- VERSION: Binder commit SHA pins the latest published environment -->
-      <a class="btn btn-primary" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/7364496?labpath=index.ipynb" target="_blank" rel="noopener">
+      <!-- Binder resolves its native server from the latest stable release. -->
+      <a class="btn btn-primary" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         Launch in your browser
       </a>
@@ -447,7 +438,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
         Download the desktop app
       </a>
-      <span class="version-pill"><span class="dot"></span> Latest release <a href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/tag/v0.7.7" target="_blank" rel="noopener"><!-- VERSION -->v0.7.7</a></span>
+      <span class="version-pill"><span class="dot"></span> <a href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener">Latest release</a></span>
     </div>
   </div>
 </section>
@@ -472,7 +463,7 @@
       <div class="feature"><h4>Trends</h4><p>Track how usage changes over time — or across any numeric axis — grouped any way your data allows.</p></div>
       <div class="feature"><h4>Topic Modelling</h4><p>Discover themes automatically across one or more corpora, with shared themes shown as blended colours.</p></div>
       <div class="feature"><h4>Quotation</h4><p>Extract who said what, with speaker and reporting verb tagged for each quotation.</p></div>
-      <div class="feature"><h4>Workspace &amp; data blocks</h4><p>Your project is a tree of derived data — join, filter, preprocess, and save or share a portable workspace.</p></div>
+      <div class="feature"><h4>Workspace &amp; data blocks</h4><p>Your project is a graph of Data Blocks — join, filter, preprocess, and save or share a portable project.</p></div>
     </div>
   </div>
 </section>
@@ -532,17 +523,17 @@
         <h4>Cloud (Binder)</h4>
         <div class="sub">Nothing to install · ARDC BinderHub</div>
         <p class="grow">Runs in your browser, free, ready in a couple of minutes. Best for trying it out — don't put sensitive data on it. Hosted on <strong>ARDC BinderHub</strong>: sign in with your institution via <strong>AAF</strong> (Australia) or <strong>Tuakiri</strong> (New Zealand).</p>
-        <a class="btn btn-primary way-cta" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/7364496?labpath=index.ipynb" target="_blank" rel="noopener">Launch in Binder</a>
+        <a class="btn btn-primary way-cta" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">Launch in Binder</a>
       </div>
 
       <div class="way">
         <h4>Desktop app</h4>
         <div class="sub">Mac &amp; Windows · runs on your machine</div>
         <p class="grow">A native installer that bundles everything, including the backend runtime — it all runs locally, so your data never leaves your computer. Recommended for serious work.</p>
-        <!-- VERSION: desktop installer links pinned to the current release -->
+        <!-- Stable asset filenames make these links follow the latest release. -->
         <div class="way-links">
-          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_darwin-aarch64.dmg">macOS (Apple Silicon)</a>
-          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.7/ldaca-wordflow_0.7.7_windows-x86_64.msi">Windows</a>
+          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest/download/ldaca-wordflow_darwin-aarch64.dmg">macOS (Apple Silicon)</a>
+          <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest/download/ldaca-wordflow_windows-x86_64.msi">Windows</a>
         </div>
         <div class="way-links">
           <a class="chip" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener">All releases →</a>
@@ -550,11 +541,10 @@
       </div>
 
       <div class="way">
-        <h4>Python</h4>
-        <div class="sub">For Python users (3.14+)</div>
-        <p class="grow">Same performance as the desktop app. Only worth it if you already work in Python.</p>
-        <code>pip install ldaca-wordflow</code>
-        <code>uvx ldaca-wordflow@latest</code>
+        <h4>Native server</h4>
+        <div class="sub">Linux, Mac &amp; Windows · your own host</div>
+        <p class="grow">Run the compiled server with its embedded interface and choose where uploaded files and projects live.</p>
+        <a class="btn btn-ghost way-cta" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener">Download server</a>
       </div>
     </div>
     <p class="note">The macOS desktop app is Developer ID signed and notarized. On Windows you may see a security prompt — choose "More info" → "Run anyway".</p>
