@@ -12,6 +12,8 @@ Set `DATA_DIR` before launching to choose storage; the default is `~/wordflow`. 
 
 The notebook needs a Python kernel to orchestrate the native process and Jupyter Server Proxy to expose it. The app itself runs as a Rust executable with its production frontend embedded. ICU and optional model files are downloaded when first used.
 
+On Nectar, the launcher uses the public notebook origin `https://binder.rc.nectar.org.au`. On another Binder host, it tries to discover the origin through the browser. If that host blocks notebook JavaScript, set `WORDFLOW_PUBLIC_ORIGIN` to the exact origin shown in your browser URL (scheme, hostname and optional port, without a path) before running the launch cell.
+
 ## Release and tests
 
 Release archives use stable platform names, such as [`wordflow-server-x86_64-unknown-linux-gnu.tar.gz`](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest/download/wordflow-server-x86_64-unknown-linux-gnu.tar.gz). The launcher selects the archive and checksum from the same release and refuses an incomplete or unverified release.

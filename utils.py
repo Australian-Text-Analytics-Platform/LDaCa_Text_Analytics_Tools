@@ -81,6 +81,27 @@ async def _sniff_forwarded_host(timeout: float) -> tuple[str, str] | None:
 
 async def discover_public_origin(sniff_timeout: float = 15.0) -> str:
     """Discover the notebook's browser origin and pass it explicitly to the native host."""
+    configured = os.environ.get("WORDFLOW_PUBLIC_ORIGIN")
+    if configured:
+        parsed = urlsplit(configured)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.hostname
+            or parsed.username
+            or parsed.password
+            or parsed.path not in {"", "/"}
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError("WORDFLOW_PUBLIC_ORIGIN must be an HTTP(S) origin without a path")
+        return configured.rstrip("/")
+
+    # JupyterLab does not execute Javascript display output on Nectar. Its
+    # launch host and notebook host have stable, distinct public names.
+    launch_host = urlsplit(os.environ.get("BINDER_LAUNCH_HOST", "")).hostname
+    if launch_host == "binderhub.rc.nectar.org.au":
+        return "https://binder.rc.nectar.org.au"
+
     sniffed = await _sniff_forwarded_host(sniff_timeout)
     if sniffed is None:
         raise RuntimeError("Could not discover this notebook's public origin. Run the cell in your browser, or supply its exact origin explicitly.")
