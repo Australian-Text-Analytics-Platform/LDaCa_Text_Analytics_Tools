@@ -1044,7 +1044,7 @@ wheels = [
 
 [[package]]
 name = "ldaca-wordflow"
-version = "0.7.9"
+version = "0.7.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
@@ -1068,9 +1068,9 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/48/81/850fbf47e6c56e2fe040566f0a998cb644e12ddb09b53147b3e0639e9279/ldaca_wordflow-0.7.9.tar.gz", hash = "sha256:0731fc51a3b04c99172087bd358140ec0596fd6844986b22449779b2f3aa5d42", size = 10805085, upload-time = "2026-09-29T14:39:25.517Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/75/384d14caae2369cbfedf7642670a1164d805740837bf087ab403192b9439/ldaca_wordflow-0.7.10.tar.gz", hash = "sha256:e25d37132d4be2d6818dc7522ba206046df80b4baffd916e7b09d3ba9618e731", size = 11466822, upload-time = "2026-10-04T13:59:40.349Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/a6/a7ae21466cd14a3725f218da671efa4266e93eb3fc4b1afc532661e33797/ldaca_wordflow-0.7.9-py3-none-any.whl", hash = "sha256:2aede575af25656f4823b5e21e3364d3b4b0ec89f611db32b11658b50875c7dd", size = 11024211, upload-time = "2026-09-29T14:39:22.544Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/c2/8a3193f88e368314a26d2218a5cf3d5bbbb093081082e7795dad00fe908d/ldaca_wordflow-0.7.10-py3-none-any.whl", hash = "sha256:dae5824baa12d34013205844998af881ad7a46a6b2d82447e65f1db4a742dee5", size = 11682256, upload-time = "2026-10-04T13:59:37.722Z" },
 ]
 
 [package.optional-dependencies]
@@ -1091,7 +1091,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ldaca-wordflow", extras = ["deploy"], specifier = "==0.7.9" },
+    { name = "ldaca-wordflow", extras = ["deploy"], specifier = "==0.7.10" },
     { name = "torch", index = "https://download.pytorch.org/whl/cpu" },
 ]
 
