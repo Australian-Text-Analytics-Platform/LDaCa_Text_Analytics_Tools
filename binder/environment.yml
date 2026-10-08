@@ -2,6 +2,15 @@ name: ldaca-binder
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
-  - ipykernel
-  - jupyter-server-proxy
+  # 3.14.5+ required: earlier 3.14.x cannot evaluate `X | Y | "Fwd"` string
+  # unions, so pydantic fails to import ldaca_wordflow's provenance models.
+  # Keep the exact `python=X.Y.Z` form — repo2docker's version detection
+  # does not understand range specs and silently falls back to its default.
+  - python=3.14.5
+  - pip
+  - pip:
+      - uv
+      - ldaca-wordflow[deploy]==0.7.11
+      - pydantic>=2.13.4
+      - --extra-index-url https://download.pytorch.org/whl/cpu
+      - torch

@@ -3,9 +3,37 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 from urllib.parse import urlsplit
 
+# Silence huggingface_hub's tqdm progress bars before the backend's
+# model_prefetch fires. In Jupyter, hf_hub auto-selects tqdm.notebook
+# whose __del__ path crashes when bars are built off the main thread —
+# the downloads succeed, but the tracebacks land in the cell output.
+os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+
+
+def _public_hub_hosts() -> set[str]:
+    """Collect the hub's public hostname(s) from Binder/JupyterHub env vars."""
+
+    hosts: set[str] = set()
+    for var in (
+        "BINDER_LAUNCH_HOST",
+        "JUPYTERHUB_PUBLIC_URL",
+        "JUPYTERHUB_PUBLIC_HUB_URL",
+        "JUPYTERHUB_HOST",
+    ):
+        raw = os.environ.get(var, "").strip()
+        if not raw:
+            continue
+        host = urlsplit(raw).hostname if "://" in raw else raw.split(":")[0]
+        if host:
+            hosts.add(host.casefold().rstrip("."))
+    return hosts
+
+
+# Exposed for tests: the ephemeral sniffer port while a sniff is in flight.
 _sniff_port: int | None = None
 
 
@@ -14,7 +42,7 @@ async def _sniff_forwarded_host(timeout: float) -> tuple[str, str] | None:
 
     Serves one ephemeral localhost endpoint and asks the notebook's own
     browser to fetch it through the hub proxy. The Host header of that request
-    supplies the public origin passed explicitly to the native server — no
+    is precisely what Wordflow's ExactHostMiddleware will later see — no
     guessing from env vars, which name the *launch* host (BINDER_LAUNCH_HOST)
     rather than the JupyterHub domain the session actually runs on (on Nectar
     the two differ, and JUPYTERHUB_PUBLIC_URL is left empty). Returns None if
@@ -79,31 +107,53 @@ async def _sniff_forwarded_host(timeout: float) -> tuple[str, str] | None:
         await server.wait_closed()
 
 
-async def discover_public_origin(sniff_timeout: float = 15.0) -> str:
-    """Discover the notebook's browser origin and pass it explicitly to the native host."""
-    configured = os.environ.get("WORDFLOW_PUBLIC_ORIGIN")
-    if configured:
-        parsed = urlsplit(configured)
-        if (
-            parsed.scheme not in {"http", "https"}
-            or not parsed.hostname
-            or parsed.username
-            or parsed.password
-            or parsed.path not in {"", "/"}
-            or parsed.query
-            or parsed.fragment
-        ):
-            raise ValueError("WORDFLOW_PUBLIC_ORIGIN must be an HTTP(S) origin without a path")
-        return configured.rstrip("/")
+def _merge_env_list(name: str, additions: set[str]) -> None:
+    """Union ``additions`` into the JSON-list env var ``name``."""
 
-    # JupyterLab does not execute Javascript display output on Nectar. Its
-    # launch host and notebook host have stable, distinct public names.
-    launch_host = urlsplit(os.environ.get("BINDER_LAUNCH_HOST", "")).hostname
-    if launch_host == "binderhub.rc.nectar.org.au":
-        return "https://binder.rc.nectar.org.au"
+    try:
+        existing = set(json.loads(os.environ.get(name, "[]")))
+    except (json.JSONDecodeError, TypeError):
+        existing = set()
+    os.environ[name] = json.dumps(sorted(existing | additions))
 
+
+async def configure_hub_networking(sniff_timeout: float = 15.0) -> None:
+    """Allowlist the hub's public host before the Wordflow backend launches.
+
+    Wordflow v0.7 rejects requests whose Host header is not allowlisted
+    (``ExactHostMiddleware``, default: localhost only) and unsafe requests
+    whose Origin does not match the request origin (``CsrfOriginMiddleware``).
+    jupyter-server-proxy forwards the browser's original Host and Origin, so
+    without this the proxied app answers every request with
+    ``host_not_allowed``. The allowlists come from the TRUSTED_HOSTS and
+    CORS_ALLOWED_ORIGINS settings env vars, which must be in place before
+    ``start_async_server()`` loads settings — call this first, from the same
+    cell. Outside a hub (no JUPYTERHUB_SERVICE_PREFIX) this is a no-op.
+    """
+
+    if not os.environ.get("JUPYTERHUB_SERVICE_PREFIX"):
+        return
+
+    hosts = _public_hub_hosts()
+    schemes = {"https"}
     sniffed = await _sniff_forwarded_host(sniff_timeout)
-    if sniffed is None:
-        raise RuntimeError("Could not discover this notebook's public origin. Run the cell in your browser, or supply its exact origin explicitly.")
-    host, scheme = sniffed
-    return f"{scheme}://{host}"
+    if sniffed is not None:
+        host, scheme = sniffed
+        hosts.add(host)
+        schemes.add(scheme)
+    else:
+        print(
+            "Warning: could not detect the hub host via the browser; "
+            f"falling back to env-derived hosts {sorted(hosts) or '(none)'}."
+        )
+
+    if not hosts:
+        return
+    _merge_env_list("TRUSTED_HOSTS", {"localhost", "127.0.0.1", "::1"} | hosts)
+    # The hub terminates TLS; the backend may see the proxied request as plain
+    # http, so the browser's https Origin must be allowlisted explicitly
+    # rather than relying on the same-origin comparison.
+    _merge_env_list(
+        "CORS_ALLOWED_ORIGINS",
+        {f"{scheme}://{host}" for host in hosts for scheme in schemes},
+    )
