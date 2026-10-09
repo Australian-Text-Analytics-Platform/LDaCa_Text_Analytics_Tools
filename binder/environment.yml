@@ -10,7 +10,9 @@ dependencies:
   - pip
   - pip:
       - uv
-      - ldaca-wordflow[deploy]==0.7.11
+      # TEST BUILD for Monika: Wordflow v0.7 at 9acd0a88 (unreleased fixes
+      # #354, #355), installed from the master repo's pre-release asset.
+      - ldaca-wordflow[deploy] @ https://github.com/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/releases/download/test-wordflow-9acd0a88/ldaca_wordflow-0.7.11-py3-none-any.whl
       - pydantic>=2.13.4
       - --extra-index-url https://download.pytorch.org/whl/cpu
       - torch
