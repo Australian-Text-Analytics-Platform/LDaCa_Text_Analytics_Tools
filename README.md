@@ -2,7 +2,7 @@
 
 ## Current release: Wordflow 0.7.12 (stable)
 
-Released 11 October 2026. Wordflow 0.7.12 is the stable version for workshops and everyday use; Wordflow 0.8 is in beta.
+Released 12 October 2026. Wordflow 0.7.12 is the stable version for workshops and everyday use; Wordflow 0.8 is in beta.
 
 - Try it in your browser: [Launch Wordflow 0.7.12 on ARDC BinderHub](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb)
 - Desktop app, with everything included: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.12/ldaca-wordflow_0.7.12_windows-x86_64.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.12/ldaca-wordflow_0.7.12_darwin-aarch64.dmg)
