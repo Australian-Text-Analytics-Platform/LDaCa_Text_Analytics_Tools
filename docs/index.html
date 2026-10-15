@@ -11,7 +11,7 @@
 <meta property="og:title" content="LDaCA Wordflow — a code-free interface for text analytics">
 <meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or as a native server.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="assets/shots/overview.png">
+<meta property="og:image" content="assets/shots/overview.jpg">
 
 <!-- Release links use stable filenames under GitHub's latest release. Binder
      tracks this repository's current notebook and resolves its own release. -->
@@ -479,34 +479,50 @@
 <section id="tour" class="alt">
   <div class="wrap">
     <h2 class="section-title">A look inside</h2>
-    <h3 class="section-head">Inspect the same flowing text, differently.</h3>
+    <h3 class="section-head">See it in action.</h3>
 
     <div class="carousel">
       <div class="carousel-frame">
         <div class="carousel-track" id="track">
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/overview.png" alt="The Wordflow workspace"></div>
-            <div class="cap"><strong>The workspace at a glance</strong> — tool sidebar, analysis panel, the workspace graph, and the data viewer, all on one screen.</div>
+            <div class="shot"><img src="assets/shots/overview.jpg" alt="Wordflow Topics view: a topic map of male and female candidates' tweets with two topics selected and a word cloud on hover, named topics, example tweets labelled by party, the Project graph and the Data Editor"></div>
+            <div class="cap"><strong>The whole workflow on one screen</strong>: tools on the left, results in the middle, and the Project graph and your data on the right.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/frequency.png" alt="Frequency tool"></div>
-            <div class="cap"><strong>Frequency</strong> — compare word usage across two corpora as clouds or ranked lists.</div>
+            <div class="shot"><img src="assets/shots/trends-category.jpg" alt="Trends: stacked bars of tweets per party, split by candidate gender and normalised to 100%" loading="lazy"></div>
+            <div class="cap"><strong>Trends by category</strong>: use a category such as party as the axis, then stack or group by another column.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/concordance.png" alt="Concordance tool"></div>
-            <div class="cap"><strong>Concordance</strong> — search several patterns at once and read every match in context.</div>
+            <div class="shot"><img src="assets/shots/trends-time-dark.jpg" alt="Trends in dark theme: daily tweet counts stacked by party" loading="lazy"></div>
+            <div class="cap"><strong>Trends over time</strong>: count by day, week or month, stacked by any column. Shown here in the dark theme.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/trends.png" alt="Trends tool"></div>
-            <div class="cap"><strong>Trends</strong> — track usage over time, grouped any way your data allows.</div>
+            <div class="shot"><img src="assets/shots/concordance-dispersion.jpg" alt="Concordance dispersion view: where students, union and university appear across Honi Soit articles" loading="lazy"></div>
+            <div class="cap"><strong>Concordance, dispersion view</strong>: see where each search term falls across every document, scaled to its length.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/topic.png" alt="Topic Modelling tool"></div>
-            <div class="cap"><strong>Topic Modelling</strong> — themes discovered automatically across your corpora.</div>
+            <div class="shot"><img src="assets/shots/topics-dark.jpg" alt="Topics in dark theme: COVID-19 topics selected on the map, with example tweets highlighting the topic words" loading="lazy"></div>
+            <div class="cap"><strong>Topics and their examples</strong>: name topics, find them by word, and read the passages behind each one with topic words highlighted.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/quotation.png" alt="Quotation tool"></div>
-            <div class="cap"><strong>Quotation</strong> — extract who said what, with speaker and verb tagged.</div>
+            <div class="shot"><img src="assets/shots/topics-suggestion.jpg" alt="Topics view showing a suggestion that 45% of documents are Ungrouped, with the settings to change outlined" loading="lazy"></div>
+            <div class="cap"><strong>Suggestions when a result looks off</strong>: a short note explains what to change and outlines the settings that help.</div>
+          </div>
+          <div class="slide-item">
+            <div class="shot"><img src="assets/shots/concordance-suggestion-dark.jpg" alt="Concordance in dark theme with a suggestion that Preview found no matches yet" loading="lazy"></div>
+            <div class="cap"><strong>Suggestions as you work</strong>: Preview found nothing in the first page, so Wordflow points you to Run or a larger page.</div>
+          </div>
+          <div class="slide-item">
+            <div class="shot"><img src="assets/shots/quotation-viewer.jpg" alt="Quotation: a quote opened in the viewer, with speaker, verb and quote highlighted in the full article" loading="lazy"></div>
+            <div class="cap"><strong>Quotation</strong>: find who said what, then open any quote in the full text with speaker, verb and quote marked.</div>
+          </div>
+          <div class="slide-item">
+            <div class="shot"><img src="assets/shots/annotation.jpg" alt="Annotation: election tweets coded Promise, Cuts or Other from a codebook, beside the codebook in the Data Editor" loading="lazy"></div>
+            <div class="cap"><strong>Annotation</strong>: code text against your own codebook, by hand or with AI, with every code beside its source.</div>
+          </div>
+          <div class="slide-item">
+            <div class="shot"><img src="assets/shots/project-graph.jpg" alt="A colourful Project graph of corpora, subsets, topic models and codebooks, with the Data Editor below" loading="lazy"></div>
+            <div class="cap"><strong>The Project graph</strong>: every Data Block and how it was made, colour-coded, ready to feed the next tool.</div>
           </div>
         </div>
         <button class="carousel-btn prev" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
