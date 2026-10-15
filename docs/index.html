@@ -241,7 +241,7 @@
   }
 
   /* ---------- Run it (3 ways) ---------- */
-  .ways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .ways { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
   .way {
     background: var(--card); border: 1px solid var(--rule); border-radius: 14px;
     padding: 26px; display: flex; flex-direction: column; box-shadow: var(--shadow);
@@ -256,6 +256,8 @@
     font-family: "SF Mono", Menlo, Consolas, monospace; margin: 6px 0; overflow-x: auto;
   }
   .way .way-cta { margin-top: 16px; }
+  .way .btn-ghost { color: var(--ink); border-color: rgba(26,29,36,0.35); }
+  .way .btn-ghost:hover { background: rgba(26,29,36,0.06); }
   .way-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .chip {
     display: inline-flex; align-items: center; gap: 6px;
@@ -431,9 +433,13 @@
     <div class="hero-cta">
       <!-- Wordflow 0.7.14 (stable): Binder runs main, which installs 0.7.14 from PyPI.
            The 0.8 native-server launcher waits on branch binder-v0.8. -->
-      <a class="btn btn-primary" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://wordflow.ldaca.edu.au" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        Launch in your browser
+        Open Wordflow online
+      </a>
+      <a class="btn btn-ghost" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        Try it on Binder
       </a>
       <a class="btn btn-ghost" href="#run">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
@@ -516,16 +522,23 @@
 <section id="run">
   <div class="wrap">
     <h2 class="section-title">Get Wordflow</h2>
-    <h3 class="section-head">Three ways to run it.</h3>
+    <h3 class="section-head">Four ways to run it.</h3>
     <p class="lead">Pick whichever suits you — the same Wordflow, the same tools.</p>
 
     <div class="ways">
+      <div class="way">
+        <h4>Online</h4>
+        <div class="sub">wordflow.ldaca.edu.au · open to researchers anywhere</div>
+        <p class="grow">Sign in through <strong>CILogon</strong> with your university or another account CILogon supports, and come back to your Projects from any computer. Hosted by LDaCA on the <strong>ARDC Nectar Research Cloud</strong>; computing power is shared between users.</p>
+        <a class="btn btn-primary way-cta" href="https://wordflow.ldaca.edu.au" target="_blank" rel="noopener">Open Wordflow online</a>
+      </div>
+
       <div class="way">
         <h4>Cloud (Binder)</h4>
         <div class="sub">Nothing to install · ARDC BinderHub</div>
         <p class="grow">Runs in your browser, free, ready in a couple of minutes. Best for trying it out — don't put sensitive data on it. Hosted on <strong>ARDC BinderHub</strong>: sign in with your institution via <strong>AAF</strong> (Australia) or <strong>Tuakiri</strong> (New Zealand).</p>
         <!-- Wordflow 0.7.14: Binder runs main (see the hero button). -->
-        <a class="btn btn-primary way-cta" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">Launch in Binder</a>
+        <a class="btn btn-ghost way-cta" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">Launch in Binder</a>
       </div>
 
       <div class="way">
@@ -685,7 +698,7 @@
     <h2 class="section-title">Explore</h2>
     <h3 class="section-head">Where to go next.</h3>
     <div class="links-grid">
-      <a class="link-card" href="https://github.com/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools#readme" target="_blank" rel="noopener">
+      <a class="link-card" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow#release-history" target="_blank" rel="noopener">
         <span class="lc-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Latest releases</span>
         <span class="lc-desc">Release history, Binder launches, and desktop downloads for every version.</span>
       </a>

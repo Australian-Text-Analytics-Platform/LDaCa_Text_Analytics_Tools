@@ -1,16 +1,14 @@
 # LDaCA Text Analytics Tools
 
+Looking for Wordflow? Start at **[LDaCA Wordflow on GitHub](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow#readme)**: ways to run it, downloads, release history with a pinned Binder link for every version, and citation. The landing page is <https://australian-text-analytics-platform.github.io/LDaCa_Text_Analytics_Tools/>.
+
 ## Current release: Wordflow 0.7.14 (stable)
 
-Released 14 October 2026 (a quick fix of 0.7.13). Wordflow 0.7.14 is the stable version for workshops and everyday use; Wordflow 0.8 is in beta.
-
-- Try it in your browser: [Launch Wordflow 0.7.14 on ARDC BinderHub](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb)
-- Desktop app, with everything included: [Windows](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.14/ldaca-wordflow_0.7.14_windows-x86_64.msi) · [macOS (Apple Silicon)](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/download/v0.7.14/ldaca-wordflow_0.7.14_darwin-aarch64.dmg)
-- Run locally with Python: `uvx --refresh ldaca-wordflow@0.7.14`
-- What's new: [release notes](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/tag/v0.7.14)
+- Online, from anywhere: <https://wordflow.ldaca.edu.au> (sign in through CILogon)
+- On ARDC BinderHub (AAF or Tuakiri sign-in): [Launch Wordflow 0.7.14](https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb)
+- Desktop app and other options: see the [Wordflow README](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow#use-wordflow)
 
 The Binder launch above runs from `main`, which installs `ldaca-wordflow[deploy]==0.7.14` from PyPI. The Wordflow 0.8 native-server launcher is on the [`binder-v0.8`](https://github.com/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/tree/binder-v0.8) branch until 0.8 is released as stable.
-
 
 This repository launches [LDaCA Wordflow](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow) on Binder and hosts the LDaCA Text Analytics Tools landing page. Wordflow itself is developed in its own repository.
 
@@ -33,4 +31,4 @@ Wordflow keeps its data under `DATA_ROOT` (default `~/Documents/ldaca`). Binder 
 
 ## Releasing a new Wordflow 0.7.x
 
-Change the pin in `binder/environment.yml`, update the version, installer links and release date here and in `docs/index.html`, then launch the Binder link once so BinderHub builds the new image.
+Change the pin in `binder/environment.yml`, update the version, installer links and release date here and in `docs/index.html`, add the release to the "Use Wordflow" and "Release history" sections of the [Wordflow README](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow#release-history) (its Binder link pins this repository's commit for the release), then launch the Binder link once so BinderHub builds the new image.
