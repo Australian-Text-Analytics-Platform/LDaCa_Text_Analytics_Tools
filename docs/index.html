@@ -256,6 +256,12 @@
     font-family: "SF Mono", Menlo, Consolas, monospace; margin: 6px 0; overflow-x: auto;
   }
   .way .way-cta { margin-top: 16px; }
+  /* Where people's data is kept, on the hosted options (Chao, 2026-10-23). */
+  .way .way-data {
+    margin-top: 14px; padding: 10px 12px; font-size: 0.86rem; color: #43474f;
+    background: var(--paper); border-left: 3px solid var(--accent); border-radius: 6px;
+  }
+  .way .way-data strong { color: var(--ink); }
   .way .btn-ghost { color: var(--ink); border-color: rgba(26,29,36,0.35); }
   .way .btn-ghost:hover { background: rgba(26,29,36,0.06); }
   .way-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
@@ -546,13 +552,15 @@
         <h4>Online</h4>
         <div class="sub">wordflow.ldaca.edu.au · open to researchers anywhere</div>
         <p class="grow">Sign in through <strong>CILogon</strong> with your university or another account CILogon supports, and come back to your Projects from any computer. Hosted by LDaCA on the <strong>ARDC Nectar Research Cloud</strong>; computing power is shared between users.</p>
+        <p class="way-data"><strong>Your data:</strong> files and Projects you upload stay on the LDaCA server on the ARDC Nectar Research Cloud until you delete them. Before uploading data with privacy or data protection concerns, check that your ethics approval allows it.</p>
         <a class="btn btn-primary way-cta" href="https://wordflow.ldaca.edu.au" target="_blank" rel="noopener">Open Wordflow online</a>
       </div>
 
       <div class="way">
         <h4>Cloud (Binder)</h4>
         <div class="sub">Nothing to install · ARDC BinderHub</div>
-        <p class="grow">Runs in your browser, free, ready in a couple of minutes. Best for trying it out — don't put sensitive data on it. Hosted on <strong>ARDC BinderHub</strong>: sign in with your institution via <strong>AAF</strong> (Australia) or <strong>Tuakiri</strong> (New Zealand).</p>
+        <p class="grow">Runs in your browser, free, ready in a couple of minutes. Best for trying it out. Hosted on <strong>ARDC BinderHub</strong>: sign in with your institution via <strong>AAF</strong> (Australia) or <strong>Tuakiri</strong> (New Zealand).</p>
+        <p class="way-data"><strong>Your data:</strong> files you upload are kept only for the session. They are deleted when the Binder server shuts down, which happens automatically once it is left idle, so download your results before you leave. Before uploading data with privacy or data protection concerns, check that your ethics approval allows it.</p>
         <!-- Wordflow 0.7.16: Binder runs main (see the hero button). -->
         <a class="btn btn-ghost way-cta" href="https://binderhub.rc.nectar.org.au/v2/gh/Australian-Text-Analytics-Platform/LDaCa_Text_Analytics_Tools/main?labpath=index.ipynb" target="_blank" rel="noopener">Launch in Binder</a>
       </div>
