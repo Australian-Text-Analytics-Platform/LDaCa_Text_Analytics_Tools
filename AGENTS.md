@@ -2,7 +2,7 @@
 
 This repository owns the Binder notebook and the LDaCA Text Analytics Tools landing page. The Wordflow application, its releases and its documentation live in [the Wordflow repository](https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow); do not vendor or build them here.
 
-`main` runs the current stable release, Wordflow 0.7.17, installed from PyPI:
+`main` runs the current stable release, Wordflow 0.7.18, installed from PyPI:
 
 - `index.ipynb`: launch, inspect and stop cells. The launch cell sets `LOG_LEVEL=WARNING` and calls `ldaca_wordflow.start_async_server` with the Jupyter proxy `root_path`.
 - `utils.py`: `configure_hub_networking()` finds the public hub host and adds it to Wordflow's allowed hosts and origins before it starts.
