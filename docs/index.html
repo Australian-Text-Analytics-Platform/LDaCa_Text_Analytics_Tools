@@ -296,6 +296,7 @@
     max-height: 860px; overflow-y: auto; margin-top: 8px;
     padding-right: 6px; scrollbar-width: thin;
   }
+  .workshop-card + .workshop-past { margin-top: 28px; }
   .workshop-past .workshop-card { margin-top: 28px; }
   .workshop-past .workshop-card:first-child { margin-top: 0; }
   .workshop-card[id], .workshop-past { scroll-margin-top: 90px; }
@@ -417,7 +418,7 @@
       <a href="#about">What it is</a>
       <a href="#tour">Tour</a>
       <a href="#run">Run it</a>
-      <a href="#workshops">Workshops</a>
+      <a href="#workshops">Workshops &amp; talks</a>
       <a href="#team">Team</a>
       <a class="nav-cta" href="#run">Get Wordflow</a>
     </nav>
@@ -591,14 +592,15 @@
   </div>
 </section>
 
-<!-- ============ WORKSHOPS ============ -->
+<!-- ============ WORKSHOPS AND TALKS ============ -->
 <section id="workshops" class="alt">
   <div class="wrap">
-    <h2 class="section-title">Workshops</h2>
+    <h2 class="section-title">Workshops &amp; talks</h2>
     <h3 class="section-head">Learn Wordflow, live.</h3>
     <p class="lead">
       We run hands-on workshops introducing Wordflow to university researchers, in person and
       online: from HDR students to senior academics, across faculties. No coding required.
+      At conferences, we talk about how we build and run Wordflow.
     </p>
 
     <!-- Auto-scrolling photo strip. Images are listed once, then duplicated by JS for a
@@ -611,6 +613,48 @@
         <div class="ws-thumb"><img src="assets/workshop/thumbs/ws4.jpg" data-full="assets/workshop/large/ws4.jpg" data-cap="The interface tour — 7 things to know" alt="Walking through the Wordflow interface"></div>
         <div class="ws-thumb"><img src="assets/workshop/thumbs/ws5.jpg" data-full="assets/workshop/large/ws5.jpg" data-cap="AI annotation hands-on · CAITG Winter School, 30 July 2026" alt="Participants coding text with the Annotation tool at the CAITG Winter School"></div>
         <div class="ws-thumb"><img src="assets/workshop/thumbs/ws6.jpg" data-full="assets/workshop/large/ws6.jpg" data-cap="Coding text with GenAI · CAITG Winter School, 30 July 2026" alt="Presenting the Annotation tool session at the CAITG Winter School"></div>
+      </div>
+    </div>
+
+    <!-- This week's events. Once the week is over, move these cards (tag "Past ...")
+         to the top of the past stack below. -->
+    <div class="workshop-card" id="eresearch-2026">
+      <div class="body">
+        <span class="tag">This week · conference</span>
+        <h4>eResearch Australasia 2026: three talks and a poster</h4>
+        <p>
+          How we build and run Wordflow, shared with the research infrastructure community:
+          hosting it on demand on the ARDC BinderHub, coding text with generative AI in a way
+          others can check and repeat, and one codebase that researchers can run four ways,
+          from a browser tab to their own desktop. The poster, with Dr Alex Guo, shows Wordflow
+          and how it puts the FAIR principles into practice.
+        </p>
+        <p class="meta">Wednesday 28 and Thursday 29 October 2026 · MCG, Melbourne · Poster 20</p>
+        <div class="way-links">
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/eresearch2026/repurposing-the-ardc-binderhub.pdf" target="_blank" rel="noopener">Repurposing the ARDC BinderHub (slides, PDF) →</a>
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/eresearch2026/from-twenty-dollar-guesses-to-verifiable-data.pdf" target="_blank" rel="noopener">From twenty-dollar guesses to verifiable data (slides, PDF) →</a>
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/eresearch2026/one-codebase-four-front-doors.pdf" target="_blank" rel="noopener">One codebase, four front doors (lightning talk slides, PDF) →</a>
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/eresearch2026/fair-text-analytics-poster.pdf" target="_blank" rel="noopener">FAIR text analytics for every researcher (poster, PDF) →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="workshop-card" id="ws-melbourne-2026-10-26">
+      <div class="body">
+        <span class="tag">This week · workshop</span>
+        <h4>Point-and-click text analytics: an introduction to LDaCA Wordflow</h4>
+        <p>
+          Our first Wordflow workshop outside Sydney, hosted by the Melbourne Data Analytics
+          Platform (MDAP) at the University of Melbourne. An afternoon of short demos and
+          hands-on time: shaping data, Frequency, Concordance and Trends, topic modelling, and
+          coding text with GenAI in the Annotation tool.
+        </p>
+        <p class="meta">Monday 26 October 2026 · 2:00 – 5:00 pm AEDT · Melbourne Connect, The University of Melbourne</p>
+        <div class="way-links">
+          <a class="chip" href="https://github.com/milysun/wordflow-workshop/blob/melbourne_mdap_workshop_2026-10-26/slides/melbourne-wordflow.pdf" target="_blank" rel="noopener">Slides (PDF) →</a>
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/melbourne/" target="_blank" rel="noopener">Step-by-step page and checkpoints →</a>
+          <a class="chip" href="https://milysun.github.io/wordflow-workshop/#melbourne_mdap_workshop_2026-10-26" target="_blank" rel="noopener">Workshop materials →</a>
+        </div>
       </div>
     </div>
 
