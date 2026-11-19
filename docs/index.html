@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LDaCA Wordflow — a code-free interface for text analytics</title>
-<meta name="description" content="LDaCA Wordflow is a code-free interface for text analytics. Load your text, then stack single-purpose tools — frequency, concordance, trends, topic modelling, quotation — along the flow of your data.">
+<title>Wordflow (by LDaCA) — a code-free interface for text analytics</title>
+<meta name="description" content="Wordflow (by LDaCA) is a code-free interface for text analytics. Load your text, then stack single-purpose tools — frequency, concordance, trends, topic modelling, quotation — along the flow of your data.">
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
 
 <!-- Open Graph / link previews -->
-<meta property="og:title" content="LDaCA Wordflow — a code-free interface for text analytics">
+<meta property="og:title" content="Wordflow (by LDaCA) — a code-free interface for text analytics">
 <meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or on your own server.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/shots/overview.jpg">
@@ -96,6 +96,10 @@
     font-size: clamp(2.4rem, 6vw, 4.4rem); font-weight: 800;
     line-height: 1.05; letter-spacing: -0.02em; color: var(--paper);
   }
+  /* Wordflow, then the University of Sydney / Sydney Informatics Hub lockup (Chao, 2026-11-20). */
+  .hero-title { display: flex; align-items: center; flex-wrap: wrap; gap: 12px clamp(28px, 5vw, 64px); }
+  .hero-partner { display: block; flex: none; }
+  .hero-partner img { display: block; height: clamp(64px, 9vw, 104px); width: auto; }
   .hero .tagline { font-size: clamp(1.2rem, 2.4vw, 1.7rem); color: var(--accent-soft); margin-top: 0.4em; font-weight: 500; }
   .hero p.intro { color: var(--paper); opacity: 0.82; font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 40em; margin-top: 1.2em; }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 2em; align-items: center; }
@@ -430,7 +434,12 @@
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow"><img src="assets/brand/ldaca-logo-simplified-light.svg" alt="LDaCA"> Language Data Commons of Australia</span>
-    <h1>LDaCA Wordflow</h1>
+    <div class="hero-title">
+      <h1>Wordflow</h1>
+      <a class="hero-partner" href="https://www.sydney.edu.au/research/facilities/sydney-informatics-hub.html" target="_blank" rel="noopener">
+        <img src="assets/brand/usyd-sih-lockup-white.svg" alt="The University of Sydney, Sydney Informatics Hub">
+      </a>
+    </div>
     <div class="tagline">A code-free interface for text analytics</div>
     <p class="intro">
       Load your text, then stack single-purpose tools — frequency, concordance, trends,
@@ -768,7 +777,7 @@
     <div class="team">
       <div class="member has-bio">
         <img src="assets/team/chao-sun.jpg" alt="Dr Chao Sun" tabindex="0">
-        <div class="bio-tip" role="tooltip">Dr Chao Sun is a Data Science Group Lead at the Sydney Informatics Hub, University of Sydney, and an analytics tech lead for the Language Data Commons of Australia (LDaCA), an ARDC co-investment partnership. He spent 2016 to 2019 as the Faculty of Arts and Social Sciences' sole data scientist and has worked with humanities and social science researchers ever since, teaching data skills to hundreds of HASS researchers along the way. Since 2022 he has led the development of LDaCA's text analytics tools, including LDaCA Wordflow and its new GenAI Annotation tool. His background spans electronics engineering (BS) and machine learning (MS, PhD).</div>
+        <div class="bio-tip" role="tooltip">Dr Chao Sun is a Data Science Group Lead at the Sydney Informatics Hub, University of Sydney, and an analytics tech lead for the Language Data Commons of Australia (LDaCA), an ARDC co-investment partnership. He spent 2016 to 2019 as the Faculty of Arts and Social Sciences' sole data scientist and has worked with humanities and social science researchers ever since, teaching data skills to hundreds of HASS researchers along the way. Since 2022 he has led the development of LDaCA's text analytics tools, including Wordflow and its new GenAI Annotation tool. His background spans electronics engineering (BS) and machine learning (MS, PhD).</div>
         <div class="name">Dr Chao Sun</div>
         <div class="role">Project tech lead · Sydney Informatics Hub</div>
         <!-- Short bios can be added per developer later. -->
@@ -856,7 +865,7 @@
   <div class="wrap">
     <h2 class="section-title">Acknowledgement</h2>
     <p class="ack-body">
-      LDaCA Wordflow is developed at the <strong>University of Sydney</strong> — by the
+      Wordflow is developed at the <strong>University of Sydney</strong> — by the
       <strong>Sydney Informatics Hub</strong> and the <strong>Sydney Corpus Lab</strong> — as a
       partner contribution to the <strong>Language Data Commons of Australia (LDaCA)</strong>.
       LDaCA is a co-investment partnership with the <strong>Australian Research Data Commons (ARDC)</strong>
