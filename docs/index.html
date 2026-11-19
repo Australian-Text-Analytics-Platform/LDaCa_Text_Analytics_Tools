@@ -9,7 +9,7 @@
 
 <!-- Open Graph / link previews -->
 <meta property="og:title" content="LDaCA Wordflow — a code-free interface for text analytics">
-<meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or as a native server.">
+<meta property="og:description" content="Load your text, then stack single-purpose tools along the flow of your data. Run it in the browser, on your desktop, or on your own server.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/shots/overview.jpg">
 
@@ -582,10 +582,12 @@
       </div>
 
       <div class="way">
-        <h4>Native server</h4>
-        <div class="sub">Linux, Mac &amp; Windows · your own host</div>
-        <p class="grow">Run the compiled server with its embedded interface and choose where uploaded files and projects live. Coming with Wordflow 0.8; for 0.7.22, run <code>uvx --refresh ldaca-wordflow@0.7.22</code>.</p>
-        <a class="btn btn-ghost way-cta" href="https://github.com/Australian-Text-Analytics-Platform/ldaca-wordflow/releases/latest" target="_blank" rel="noopener">Download server</a>
+        <h4>Local server</h4>
+        <div class="sub">Linux, Mac &amp; Windows · with uv or pip</div>
+        <p class="grow">Start Wordflow from a terminal on your own computer or server, then open <strong>localhost:8001</strong> in your browser. Your files and Projects stay on that machine. Use <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv</a>, or pip with Python 3.14 or later; after pip, start it with <code style="display:inline;padding:1px 5px;">ldaca-wordflow</code>.</p>
+        <code>uvx --refresh ldaca-wordflow@0.7.22</code>
+        <code>pip install ldaca-wordflow==0.7.22</code>
+        <a class="btn btn-ghost way-cta" href="https://pypi.org/project/ldaca-wordflow/0.7.22/" target="_blank" rel="noopener">ldaca-wordflow on PyPI</a>
       </div>
     </div>
     <p class="note">The macOS desktop app is Developer ID signed and notarized. On Windows you may see a security prompt — choose "More info" → "Run anyway".</p>
