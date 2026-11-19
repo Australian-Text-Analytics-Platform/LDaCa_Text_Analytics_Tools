@@ -75,7 +75,7 @@
   .brand img { height: 26px; width: auto; }
   .brand .sep { color: var(--rule); font-weight: 400; }
   /* After Wordflow: the University of Sydney / Sydney Informatics Hub lockup (Chao, 2026-11-20). */
-  .nav-partner { display: block; flex: none; margin-left: 22px; margin-right: auto; }
+  .nav-partner { display: block; flex: none; margin-left: 48px; margin-right: auto; }
   .nav-partner img { display: block; height: 46px; width: auto; }
   .nav-links { display: flex; align-items: center; gap: 22px; }
   .nav-links a { color: var(--ink); font-size: 0.95rem; font-weight: 500; white-space: nowrap; }
@@ -394,8 +394,8 @@
     .links-grid { grid-template-columns: 1fr 1fr; }
   }
   /* The menu folds earlier than the grids: the full top bar, with the
-     Sydney Informatics Hub lockup, needs about 950px. */
-  @media (max-width: 980px) {
+     Sydney Informatics Hub lockup, needs about 980px. */
+  @media (max-width: 1010px) {
     .nav-links { display: none; }
     .nav-toggle { display: block; }
     .nav-links.open {
@@ -412,8 +412,14 @@
   @media (max-width: 440px) {
     .brand { gap: 6px; font-size: 1rem; }
     .brand img { height: 20px; }
-    .nav-partner { margin-left: 12px; }
+    .nav-partner { margin-left: 28px; }
     .nav-partner img { height: 38px; }
+  }
+  @media (max-width: 360px) {
+    .brand { gap: 5px; font-size: 0.92rem; }
+    .brand img { height: 17px; }
+    .nav-partner { margin-left: 16px; }
+    .nav-partner img { height: 32px; }
   }
 </style>
 </head>
