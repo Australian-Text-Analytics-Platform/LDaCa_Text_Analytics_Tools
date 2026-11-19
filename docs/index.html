@@ -74,8 +74,11 @@
   .brand:hover { text-decoration: none; }
   .brand img { height: 26px; width: auto; }
   .brand .sep { color: var(--rule); font-weight: 400; }
+  /* After Wordflow: the University of Sydney / Sydney Informatics Hub lockup (Chao, 2026-11-20). */
+  .nav-partner { display: block; flex: none; margin-left: 22px; margin-right: auto; }
+  .nav-partner img { display: block; height: 46px; width: auto; }
   .nav-links { display: flex; align-items: center; gap: 22px; }
-  .nav-links a { color: var(--ink); font-size: 0.95rem; font-weight: 500; }
+  .nav-links a { color: var(--ink); font-size: 0.95rem; font-weight: 500; white-space: nowrap; }
   .nav-links a:hover { color: var(--accent); text-decoration: none; }
   .nav-cta {
     background: var(--accent); color: var(--paper) !important;
@@ -96,10 +99,6 @@
     font-size: clamp(2.4rem, 6vw, 4.4rem); font-weight: 800;
     line-height: 1.05; letter-spacing: -0.02em; color: var(--paper);
   }
-  /* Wordflow, then the University of Sydney / Sydney Informatics Hub lockup (Chao, 2026-11-20). */
-  .hero-title { display: flex; align-items: center; flex-wrap: wrap; gap: 12px clamp(28px, 5vw, 64px); }
-  .hero-partner { display: block; flex: none; }
-  .hero-partner img { display: block; height: clamp(64px, 9vw, 104px); width: auto; }
   .hero .tagline { font-size: clamp(1.2rem, 2.4vw, 1.7rem); color: var(--accent-soft); margin-top: 0.4em; font-weight: 500; }
   .hero p.intro { color: var(--paper); opacity: 0.82; font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 40em; margin-top: 1.2em; }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 2em; align-items: center; }
@@ -393,6 +392,10 @@
   @media (max-width: 860px) {
     .features, .ways, .team, .links-grid { grid-template-columns: 1fr; }
     .links-grid { grid-template-columns: 1fr 1fr; }
+  }
+  /* The menu folds earlier than the grids: the full top bar, with the
+     Sydney Informatics Hub lockup, needs about 950px. */
+  @media (max-width: 980px) {
     .nav-links { display: none; }
     .nav-toggle { display: block; }
     .nav-links.open {
@@ -405,6 +408,13 @@
     .links-grid { grid-template-columns: 1fr; }
     section { padding: 52px 0; }
   }
+  /* Keep LDaCA · Wordflow, the Sydney Informatics Hub lockup and the menu button on one line. */
+  @media (max-width: 440px) {
+    .brand { gap: 6px; font-size: 1rem; }
+    .brand img { height: 20px; }
+    .nav-partner { margin-left: 12px; }
+    .nav-partner img { height: 38px; }
+  }
 </style>
 </head>
 <body>
@@ -416,6 +426,9 @@
       <img src="assets/brand/ldaca-logo-simplified-dark.svg" alt="LDaCA">
       <span class="sep">·</span>
       <span>Wordflow</span>
+    </a>
+    <a class="nav-partner" href="https://www.sydney.edu.au/research/facilities/sydney-informatics-hub.html" target="_blank" rel="noopener">
+      <img src="assets/brand/usyd-sih-lockup-black.svg" alt="The University of Sydney, Sydney Informatics Hub">
     </a>
     <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
     <nav class="nav-links" id="navlinks">
@@ -434,12 +447,7 @@
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow"><img src="assets/brand/ldaca-logo-simplified-light.svg" alt="LDaCA"> Language Data Commons of Australia</span>
-    <div class="hero-title">
-      <h1>Wordflow</h1>
-      <a class="hero-partner" href="https://www.sydney.edu.au/research/facilities/sydney-informatics-hub.html" target="_blank" rel="noopener">
-        <img src="assets/brand/usyd-sih-lockup-white.svg" alt="The University of Sydney, Sydney Informatics Hub">
-      </a>
-    </div>
+    <h1>Wordflow</h1>
     <div class="tagline">A code-free interface for text analytics</div>
     <p class="intro">
       Load your text, then stack single-purpose tools — frequency, concordance, trends,
