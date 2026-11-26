@@ -127,13 +127,40 @@
     font-size: clamp(1.25rem, 2.4vw, 1.9rem); font-weight: 500; line-height: 1.3;
     margin: 1.4em 0 0.4em; max-width: 22em;
   }
-  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
-  .feature {
+  /* Two halves: classic text analytics and Annotation, then the Project band. */
+  .suite { display: grid; grid-template-columns: 1fr 1.15fr; gap: 20px; margin-top: 40px; align-items: stretch; }
+  .suite-half {
     background: var(--card); border: 1px solid var(--rule); border-radius: 14px;
-    padding: 24px; box-shadow: var(--shadow);
+    padding: 28px; box-shadow: var(--shadow); min-width: 0;
   }
-  .feature h4 { color: var(--accent); font-size: 1.15rem; margin-bottom: 0.35em; }
-  .feature p { color: #43474f; font-size: 0.98rem; }
+  .suite-annot { border-top: 5px solid var(--accent); }
+  .suite-eyebrow {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    color: var(--accent); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .suite-new {
+    background: var(--accent-soft); color: var(--accent); border-radius: 999px;
+    padding: 2px 9px; font-size: 0.7rem; letter-spacing: 0.06em;
+  }
+  .suite-half h4 { font-size: 1.35rem; line-height: 1.2; margin: 0.35em 0 0.8em; }
+  .suite-intro { color: #43474f; font-size: 0.98rem; margin-bottom: 1em; }
+  .tool-list { list-style: none; display: flex; flex-direction: column; }
+  .tool-list li { color: #43474f; font-size: 0.95rem; padding: 11px 0; border-top: 1px solid #ebe6db; }
+  .tool-list li:first-child { border-top: 0; padding-top: 0; }
+  .tool-list strong { display: block; color: var(--ink); font-size: 1rem; }
+  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { counter-increment: step; position: relative; padding-left: 40px; color: #43474f; font-size: 0.95rem; }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--paper);
+    font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .steps strong { color: var(--ink); }
+  .suite-thread {
+    margin-top: 20px; padding: 18px 22px; border-radius: 12px; background: #f6f3ec;
+    border-left: 5px solid var(--ink); color: #3a3e47; font-size: 0.98rem;
+  }
+  .suite-thread strong { color: var(--ink); }
 
   /* ---------- Carousel ---------- */
   .carousel { margin-top: 12px; position: relative; }
@@ -478,7 +505,7 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
-    .features, .ways, .team, .links-grid { grid-template-columns: 1fr; }
+    .suite, .ways, .team, .links-grid { grid-template-columns: 1fr; }
   }
   /* The menu folds earlier than the grids: the full top bar, with the
      Sydney Informatics Hub lockup, needs about 980px. */
@@ -568,26 +595,54 @@
 </section>
 
 <!-- ============ WHAT IT IS ============ -->
+<!-- Two halves (Chao, 2026-11-26): the classic text analytics tools, which measure
+     patterns across a corpus, and Annotation, which applies the researcher's own
+     codebook to each text. Data Blocks in a Project join the two. -->
 <section id="about">
   <div class="wrap">
     <h2 class="section-title">What it is</h2>
-    <h3 class="section-head">Text analysis, without writing code.</h3>
+    <h3 class="section-head">Analyse and code text, without programming.</h3>
     <p class="lead">
-      Wordflow is the largest tool in the LDaCA Text Analytics Tools suite — a web app for
-      researchers who work with text. You bring a corpus; Wordflow gives you a workspace where
-      each analysis becomes a data block you can branch, filter, and feed into the next tool.
-      Tools talk to each other: click a word in Frequency and it opens in Concordance; send a
-      result to the workspace and group it in Trends.
+      Wordflow is the largest tool in the LDaCA Text Analytics Tools suite: one app for
+      researchers who work with text. It has two kinds of tools. The classic text analytics
+      tools measure patterns across a whole corpus: which words, in which contexts, how often,
+      and how that changes. Annotation does the other half of the work: it applies your own
+      codebook to each text, by hand or with an AI model that you check like any new coder.
     </p>
     <p class="pull">Stack tools differently along the flow of text, and you've built a workflow. That's Wordflow.</p>
 
-    <div class="features">
-      <div class="feature"><h4>Frequency</h4><p>Compare word usage across corpora as word clouds or ranked lists, with stopwords and statistical measures.</p></div>
-      <div class="feature"><h4>Concordance</h4><p>Search several patterns at once with regular expressions, and read every match in its surrounding context.</p></div>
-      <div class="feature"><h4>Trends</h4><p>Track how usage changes over time — or across any numeric axis — grouped any way your data allows.</p></div>
-      <div class="feature"><h4>Topic Modelling</h4><p>Discover themes automatically across one or more corpora, with shared themes shown as blended colours.</p></div>
-      <div class="feature"><h4>Quotation</h4><p>Extract who said what, with speaker and reporting verb tagged for each quotation.</p></div>
-      <div class="feature"><h4>Workspace &amp; data blocks</h4><p>Your project is a graph of Data Blocks — join, filter, preprocess, and save or share a portable project.</p></div>
+    <div class="suite">
+      <div class="suite-half suite-classic">
+        <span class="suite-eyebrow">Text analytics</span>
+        <h4>Patterns across the corpus</h4>
+        <ul class="tool-list">
+          <li><strong>Frequency</strong> Compare word use across corpora as word clouds or ranked lists, with stopwords and statistical measures.</li>
+          <li><strong>Concordance</strong> Search several patterns at once, with regular expressions, and read every match in its context.</li>
+          <li><strong>Trends</strong> Track how use changes over time, or across any numeric axis, grouped any way your data allows.</li>
+          <li><strong>Topic Modelling</strong> Find themes across one or more corpora, name them, and read the passages behind each one.</li>
+          <li><strong>Quotation</strong> Find who said what, with the speaker and reporting verb marked for each quote.</li>
+        </ul>
+      </div>
+
+      <div class="suite-half suite-annot">
+        <span class="suite-eyebrow">Annotation <span class="suite-new">New in 0.7</span></span>
+        <h4>Your codebook, on every text</h4>
+        <p class="suite-intro">Qualitative coding at corpus scale. Your coding process stays the same; AI joins it as a new coder that is checked before it codes at scale.</p>
+        <ol class="steps">
+          <li><strong>Write the codebook.</strong> Codes and their descriptions, kept as a table. The AI Code Designer can draft a first version from a short brief and a sample of your texts, for you to edit.</li>
+          <li><strong>Code a sample.</strong> By hand, or with an AI model: a commercial one, your institution's service, or a model running on your own computer.</li>
+          <li><strong>Check the agreement.</strong> Percent agreement, Cohen's kappa or Krippendorff's alpha against your own coding, with a confusion matrix. Your corrections become examples for the next round.</li>
+          <li><strong>Scale up.</strong> When the agreement is good enough for your study, code the whole corpus. The prompt, model, settings and codebook are saved with the Project.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="suite-thread">
+      <strong>One Project joins them.</strong>
+      Join, filter and preprocess your data, and every result, codes included, becomes a Data
+      Block the next tool can use: filter texts by code, then follow each code over time in
+      Trends. The Project graph records every step, and the whole Project downloads as one
+      file that opens wherever Wordflow runs.
     </div>
   </div>
 </section>
