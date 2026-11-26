@@ -167,6 +167,9 @@
     background: #efe9de; padding: 18px;
   }
   .slide-item .shot img { max-height: 100%; width: auto; border-radius: 8px; border: 1px solid var(--rule); background: #fff; cursor: zoom-in; }
+  /* Screen recordings in the carousel: short silent loops (.loop) play while their
+     slide is showing; the two Annotation clips (.clip) play when clicked. */
+  .slide-item .shot video { display: block; max-height: 100%; max-width: 100%; width: auto; height: auto; border-radius: 8px; border: 1px solid var(--rule); background: #fff; }
   .slide-item .cap {
     padding: 16px 22px; background: var(--card); border-top: 1px solid var(--rule);
     font-size: 0.98rem; color: #3a3e47;
@@ -651,6 +654,10 @@
             <div class="cap"><strong>The whole workflow on one screen</strong>: tools on the left, results in the middle, and the Project graph and your data on the right.</div>
           </div>
           <div class="slide-item">
+            <div class="shot"><video class="loop" src="assets/clips/frequency-stopwords.mp4" poster="assets/clips/frequency-stopwords-poster.jpg" muted loop playsinline preload="none" aria-label="Frequency: two word clouds; English stop words are switched on, then https, co and rt are right-clicked and disappear"></video></div>
+            <div class="cap"><strong>Frequency, with stop words</strong>: switch on a stop-word list and the filler words drop out; right-click any other word to hide it too.</div>
+          </div>
+          <div class="slide-item">
             <div class="shot"><img src="assets/shots/trends-category.jpg" alt="Trends: stacked bars of tweets per party, split by candidate gender and normalised to 100%" loading="lazy"></div>
             <div class="cap"><strong>Trends by category</strong>: use a category such as party as the axis, then stack or group by another column.</div>
           </div>
@@ -663,8 +670,8 @@
             <div class="cap"><strong>Concordance, dispersion view</strong>: see where each search term falls across every document, scaled to its length.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/topics-dark.jpg" alt="Topics in dark theme: COVID-19 topics selected on the map, with example tweets highlighting the topic words" loading="lazy"></div>
-            <div class="cap"><strong>Topics and their examples</strong>: name topics, find them by word, and read the passages behind each one with topic words highlighted.</div>
+            <div class="shot"><video class="loop" src="assets/clips/topics-interactions.mp4" poster="assets/clips/topics-interactions-poster.jpg" muted loop playsinline preload="none" aria-label="Topic Modelling: hovering a topic shows a mini word cloud; search terms dim the unrelated topics; clicking a topic opens its passages with topic words highlighted; 44 topics are merged into 15"></video></div>
+            <div class="cap"><strong>Topic Modelling, hands on</strong>: hover a topic for its words, search to light up the topics that matter, click one to read its passages, and merge topics into fewer.</div>
           </div>
           <div class="slide-item">
             <div class="shot"><img src="assets/shots/topics-suggestion.jpg" alt="Topics view showing a suggestion that 45% of documents are Ungrouped, with the settings to change outlined" loading="lazy"></div>
@@ -679,8 +686,12 @@
             <div class="cap"><strong>Quotation</strong>: find who said what, then open any quote in the full text with speaker, verb and quote marked.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/annotation.jpg" alt="Annotation: election tweets coded Promise, Cuts or Other from a codebook, beside the codebook in the Data Editor" loading="lazy"></div>
-            <div class="cap"><strong>Annotation</strong>: code text against your own codebook, by hand or with AI, with every code beside its source.</div>
+            <div class="shot"><video class="clip" src="assets/clips/annotation-code-designer.mp4" poster="assets/clips/annotation-code-designer-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: the AI Code Designer drafts a codebook of four job-related codes from a short brief"></video></div>
+            <div class="cap"><strong>Annotation, step 1: the AI Code Designer</strong> drafts a first codebook from a short brief and a sample of your texts, for you to edit. Click to play (1 min, no sound).</div>
+          </div>
+          <div class="slide-item">
+            <div class="shot"><video class="clip" src="assets/clips/annotation-ai-coding.mp4" poster="assets/clips/annotation-ai-coding-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: an AI model codes the tweets, then its codes are compared with human coding using Cohen's kappa and a confusion matrix"></video></div>
+            <div class="cap"><strong>Annotation, step 2: AI coding, checked</strong>. A model codes the texts, then you compare its codes with your own: Cohen's kappa and a confusion matrix. Click to play (1 min 30 s, no sound).</div>
           </div>
           <div class="slide-item">
             <div class="shot"><img src="assets/shots/project-graph.jpg" alt="A colourful Project graph of corpora, subsets, topic models and codebooks, with the Data Editor below" loading="lazy"></div>
@@ -691,7 +702,7 @@
         <button class="carousel-btn next" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
       <div class="dots" id="dots"></div>
-      <p class="zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Click any screenshot to view it full screen — click again to return.</p>
+      <p class="zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Click any screenshot to view it full screen — click again to return. The short clips loop on their own; the two Annotation clips play when you click them.</p>
     </div>
   </div>
 </section>
@@ -1126,9 +1137,29 @@
     }
     var dots = dotsWrap.children;
 
+    // Recordings: only the visible slide's loop plays, and only while the carousel is on
+    // screen; moving away pauses any clip. Reduced motion: loops show controls instead.
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var onScreen = false;
+    if (reduce) track.querySelectorAll('video.loop').forEach(function (v) { v.controls = true; });
+    function syncVideos() {
+      for (var k = 0; k < n; k++) {
+        slides[k].querySelectorAll('video').forEach(function (v) {
+          if (k === i && onScreen && !reduce && v.classList.contains('loop')) {
+            var p = v.play(); if (p && p.catch) p.catch(function () {});
+          } else if (!v.paused) { v.pause(); }
+        });
+      }
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; syncVideos(); }, { threshold: 0.4 })
+        .observe(track.parentNode);
+    }
+
     function render() {
       track.style.transform = 'translateX(' + (-i * 100) + '%)';
       for (var k = 0; k < n; k++) dots[k].classList.toggle('active', k === i);
+      syncVideos();
     }
     function go(idx) { i = (idx + n) % n; render(); }
     function next() { go(i + 1); }
@@ -1141,6 +1172,7 @@
     // in which case the lightbox handles them (see the lightbox IIFE).
     document.addEventListener('keydown', function (e) {
       if (document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.target && e.target.tagName === 'VIDEO') return;  // arrows seek inside a playing clip
       if (e.key === 'ArrowRight') next();
       else if (e.key === 'ArrowLeft') prev();
     });
