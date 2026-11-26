@@ -169,6 +169,15 @@
   .slide-item .shot img { max-height: 100%; width: auto; border-radius: 8px; border: 1px solid var(--rule); background: #fff; cursor: zoom-in; }
   /* Screen recordings in the carousel: short silent loops (.loop) play while their
      slide is showing; the two Annotation clips (.clip) play when clicked. */
+  .slide-item .shot { position: relative; }
+  .slide-item .shot video.loop { cursor: zoom-in; }
+  .shot-expand {
+    position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid var(--rule); background: rgba(255,255,255,0.92); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow);
+  }
+  .shot-expand:hover { color: var(--accent); border-color: var(--accent); }
+  .shot-expand svg { width: 18px; height: 18px; }
   .slide-item .shot video { display: block; max-height: 100%; max-width: 100%; width: auto; height: auto; border-radius: 8px; border: 1px solid var(--rule); background: #fff; }
   .slide-item .cap {
     padding: 16px 22px; background: var(--card); border-top: 1px solid var(--rule);
@@ -206,6 +215,12 @@
     max-width: 100%; max-height: 100%; width: auto; height: auto;
     border-radius: 8px; box-shadow: 0 12px 50px rgba(0,0,0,0.55); cursor: zoom-out;
   }
+  .lightbox video {
+    display: none; max-width: 100%; max-height: 100%; width: auto; height: auto;
+    border-radius: 8px; box-shadow: 0 12px 50px rgba(0,0,0,0.55); background: #000; cursor: default;
+  }
+  .lightbox.is-video img { display: none; }
+  .lightbox.is-video video { display: block; }
   .lightbox .lb-close {
     position: fixed; top: 18px; right: 24px; width: 42px; height: 42px;
     border: 0; border-radius: 50%; background: rgba(253,252,248,0.12); color: var(--paper);
@@ -654,7 +669,7 @@
             <div class="cap"><strong>The whole workflow on one screen</strong>: tools on the left, results in the middle, and the Project graph and your data on the right.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><video class="loop" src="assets/clips/frequency-stopwords.mp4" poster="assets/clips/frequency-stopwords-poster.jpg" muted loop playsinline preload="none" aria-label="Frequency: two word clouds; English stop words are switched on, then https, co and rt are right-clicked and disappear"></video></div>
+            <div class="shot"><video class="loop" src="assets/clips/frequency-stopwords.mp4" poster="assets/clips/frequency-stopwords-poster.jpg" muted loop playsinline preload="none" aria-label="Frequency: two word clouds; English stop words are switched on, then https, co and rt are right-clicked and disappear"></video><button class="shot-expand" type="button" aria-label="View larger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/></svg></button></div>
             <div class="cap"><strong>Frequency, with stop words</strong>: switch on a stop-word list and the filler words drop out; right-click any other word to hide it too.</div>
           </div>
           <div class="slide-item">
@@ -662,15 +677,11 @@
             <div class="cap"><strong>Trends by category</strong>: use a category such as party as the axis, then stack or group by another column.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/trends-time-dark.jpg" alt="Trends in dark theme: daily tweet counts stacked by party" loading="lazy"></div>
-            <div class="cap"><strong>Trends over time</strong>: count by day, week or month, stacked by any column. Shown here in the dark theme.</div>
-          </div>
-          <div class="slide-item">
             <div class="shot"><img src="assets/shots/concordance-dispersion.jpg" alt="Concordance dispersion view: where students, union and university appear across Honi Soit articles" loading="lazy"></div>
             <div class="cap"><strong>Concordance, dispersion view</strong>: see where each search term falls across every document, scaled to its length.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><video class="loop" src="assets/clips/topics-interactions.mp4" poster="assets/clips/topics-interactions-poster.jpg" muted loop playsinline preload="none" aria-label="Topic Modelling: hovering a topic shows a mini word cloud; search terms dim the unrelated topics; clicking a topic opens its passages with topic words highlighted; 44 topics are merged into 15"></video></div>
+            <div class="shot"><video class="loop" src="assets/clips/topics-interactions.mp4" poster="assets/clips/topics-interactions-poster.jpg" muted loop playsinline preload="none" aria-label="Topic Modelling: hovering a topic shows a mini word cloud; search terms dim the unrelated topics; clicking a topic opens its passages with topic words highlighted; 44 topics are merged into 15"></video><button class="shot-expand" type="button" aria-label="View larger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/></svg></button></div>
             <div class="cap"><strong>Topic Modelling, hands on</strong>: hover a topic for its words, search to light up the topics that matter, click one to read its passages, and merge topics into fewer.</div>
           </div>
           <div class="slide-item">
@@ -678,19 +689,15 @@
             <div class="cap"><strong>Suggestions when a result looks off</strong>: a short note explains what to change and outlines the settings that help.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><img src="assets/shots/concordance-suggestion-dark.jpg" alt="Concordance in dark theme with a suggestion that Preview found no matches yet" loading="lazy"></div>
-            <div class="cap"><strong>Suggestions as you work</strong>: Preview found nothing in the first page, so Wordflow points you to Run or a larger page.</div>
-          </div>
-          <div class="slide-item">
             <div class="shot"><img src="assets/shots/quotation-viewer.jpg" alt="Quotation: a quote opened in the viewer, with speaker, verb and quote highlighted in the full article" loading="lazy"></div>
             <div class="cap"><strong>Quotation</strong>: find who said what, then open any quote in the full text with speaker, verb and quote marked.</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><video class="clip" src="assets/clips/annotation-code-designer.mp4" poster="assets/clips/annotation-code-designer-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: the AI Code Designer drafts a codebook of four job-related codes from a short brief"></video></div>
+            <div class="shot"><video class="clip" src="assets/clips/annotation-code-designer.mp4" poster="assets/clips/annotation-code-designer-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: the AI Code Designer drafts a codebook of four job-related codes from a short brief"></video><button class="shot-expand" type="button" aria-label="View larger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/></svg></button></div>
             <div class="cap"><strong>Annotation, step 1: the AI Code Designer</strong> drafts a first codebook from a short brief and a sample of your texts, for you to edit. Click to play (1 min, no sound).</div>
           </div>
           <div class="slide-item">
-            <div class="shot"><video class="clip" src="assets/clips/annotation-ai-coding.mp4" poster="assets/clips/annotation-ai-coding-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: an AI model codes the tweets, then its codes are compared with human coding using Cohen's kappa and a confusion matrix"></video></div>
+            <div class="shot"><video class="clip" src="assets/clips/annotation-ai-coding.mp4" poster="assets/clips/annotation-ai-coding-poster.jpg" controls muted playsinline preload="none" aria-label="Annotation: an AI model codes the tweets, then its codes are compared with human coding using Cohen's kappa and a confusion matrix"></video><button class="shot-expand" type="button" aria-label="View larger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/></svg></button></div>
             <div class="cap"><strong>Annotation, step 2: AI coding, checked</strong>. A model codes the texts, then you compare its codes with your own: Cohen's kappa and a confusion matrix. Click to play (1 min 30 s, no sound).</div>
           </div>
           <div class="slide-item">
@@ -702,7 +709,7 @@
         <button class="carousel-btn next" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
       <div class="dots" id="dots"></div>
-      <p class="zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Click any screenshot to view it full screen — click again to return. The short clips loop on their own; the two Annotation clips play when you click them.</p>
+      <p class="zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Click any screenshot or clip to view it full screen. The short clips loop on their own; the two Annotation clips play when you click them.</p>
     </div>
   </div>
 </section>
@@ -1112,10 +1119,11 @@
 </footer>
 
 <!-- ============ LIGHTBOX ============ -->
-<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Expanded screenshot">
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Expanded screenshot or clip">
   <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
   <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
   <img id="lightbox-img" src="" alt="">
+  <video id="lightbox-video" muted playsinline controls preload="none"></video>
   <button class="lb-nav lb-next" id="lb-next" aria-label="Next image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
   <div class="lb-cap" id="lightbox-cap"></div>
 </div>
@@ -1145,12 +1153,14 @@
     function syncVideos() {
       for (var k = 0; k < n; k++) {
         slides[k].querySelectorAll('video').forEach(function (v) {
-          if (k === i && onScreen && !reduce && v.classList.contains('loop')) {
+          var lbOpen = document.getElementById('lightbox').classList.contains('open');
+          if (k === i && onScreen && !reduce && !lbOpen && v.classList.contains('loop')) {
             var p = v.play(); if (p && p.catch) p.catch(function () {});
           } else if (!v.paused) { v.pause(); }
         });
       }
     }
+    window.wfCarouselSync = syncVideos;
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; syncVideos(); }, { threshold: 0.4 })
         .observe(track.parentNode);
@@ -1201,11 +1211,25 @@
     var gallery = [];  // active set of { full, alt, cap }
     var cur = 0;
 
+    var lbVid = document.getElementById('lightbox-video');
+    lbVid.addEventListener('click', function (e) { e.stopPropagation(); });  // controls must not close the viewer
     function show() {
       var it = gallery[cur];
       if (!it) return;
-      lbImg.src = it.full; lbImg.alt = it.alt || '';
       lbCap.textContent = it.cap || '';
+      if (it.video) {
+        lb.classList.add('is-video');
+        lbImg.removeAttribute('src');
+        lbVid.poster = it.poster || '';
+        lbVid.loop = !!it.loop;
+        lbVid.setAttribute('aria-label', it.alt || '');
+        if (lbVid.getAttribute('src') !== it.full) lbVid.src = it.full;
+        var p = lbVid.play(); if (p && p.catch) p.catch(function () {});
+      } else {
+        lb.classList.remove('is-video');
+        lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
+        lbImg.src = it.full; lbImg.alt = it.alt || '';
+      }
     }
     function open(items, index, float) {
       gallery = items; cur = index;
@@ -1217,11 +1241,15 @@
       lb.classList.add('open');
       lb.setAttribute('aria-hidden', 'false');
       document.body.classList.add('lb-open');
+      document.querySelectorAll('#track video').forEach(function (v) { v.pause(); });
     }
     function close() {
       lb.classList.remove('open');
       lb.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('lb-open');
+      lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
+      lb.classList.remove('is-video');
+      if (window.wfCarouselSync) window.wfCarouselSync();
     }
     function step(d) {
       if (gallery.length < 2) return;
@@ -1233,10 +1261,20 @@
     var shots = [];
     document.querySelectorAll('#track .slide-item').forEach(function (item) {
       var im = item.querySelector('.shot img');
+      var vid = item.querySelector('.shot video');
       var capEl = item.querySelector('.cap');
-      if (!im) return;
+      var cap = capEl ? capEl.textContent.trim() : '';
       var idx = shots.length;
-      shots.push({ full: im.src, alt: im.alt, cap: capEl ? capEl.textContent.trim() : '' });
+      if (vid) {
+        shots.push({ video: true, full: vid.getAttribute('src'), poster: vid.getAttribute('poster'),
+                     loop: vid.classList.contains('loop'), alt: vid.getAttribute('aria-label'), cap: cap });
+        var btn = item.querySelector('.shot-expand');
+        if (btn) btn.addEventListener('click', function (e) { e.stopPropagation(); open(shots, idx); });
+        if (vid.classList.contains('loop')) vid.addEventListener('click', function (e) { e.stopPropagation(); open(shots, idx); });
+        return;
+      }
+      if (!im) return;
+      shots.push({ full: im.src, alt: im.alt, cap: cap });
       im.addEventListener('click', function (e) { e.stopPropagation(); open(shots, idx); });
     });
 
