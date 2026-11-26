@@ -128,7 +128,7 @@
     margin: 1.4em 0 0.4em; max-width: 22em;
   }
   /* Two halves: classic text analytics and Annotation, then the Project band. */
-  .suite { display: grid; grid-template-columns: 1fr 1.15fr; gap: 20px; margin-top: 40px; align-items: stretch; }
+  .suite { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; align-items: stretch; }
   .suite-half {
     background: var(--card); border: 1px solid var(--rule); border-radius: 14px;
     padding: 28px; box-shadow: var(--shadow); min-width: 0;
@@ -143,19 +143,10 @@
     padding: 2px 9px; font-size: 0.7rem; letter-spacing: 0.06em;
   }
   .suite-half h4 { font-size: 1.35rem; line-height: 1.2; margin: 0.35em 0 0.8em; }
-  .suite-intro { color: #43474f; font-size: 0.98rem; margin-bottom: 1em; }
   .tool-list { list-style: none; display: flex; flex-direction: column; }
   .tool-list li { color: #43474f; font-size: 0.95rem; padding: 11px 0; border-top: 1px solid #ebe6db; }
   .tool-list li:first-child { border-top: 0; padding-top: 0; }
   .tool-list strong { display: block; color: var(--ink); font-size: 1rem; }
-  .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 14px; }
-  .steps li { counter-increment: step; position: relative; padding-left: 40px; color: #43474f; font-size: 0.95rem; }
-  .steps li::before {
-    content: counter(step); position: absolute; left: 0; top: 0;
-    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--paper);
-    font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
-  }
-  .steps strong { color: var(--ink); }
   .suite-thread {
     margin-top: 20px; padding: 18px 22px; border-radius: 12px; background: #f6f3ec;
     border-left: 5px solid var(--ink); color: #3a3e47; font-size: 0.98rem;
@@ -595,19 +586,19 @@
 </section>
 
 <!-- ============ WHAT IT IS ============ -->
-<!-- Two halves (Chao, 2026-11-26): the classic text analytics tools, which measure
-     patterns across a corpus, and Annotation, which applies the researcher's own
-     codebook to each text. Data Blocks in a Project join the two. -->
+<!-- Two cards (Chao, 2026-11-26): the text analytics tools, and Annotation, which works
+     with them like any other tool; what it adds is generative AI. Brief feature lists,
+     not a tutorial. -->
 <section id="about">
   <div class="wrap">
     <h2 class="section-title">What it is</h2>
     <h3 class="section-head">Analyse and code text, without programming.</h3>
     <p class="lead">
       Wordflow is the largest tool in the LDaCA Text Analytics Tools suite: one app for
-      researchers who work with text. It has two kinds of tools. The classic text analytics
-      tools measure patterns across a whole corpus: which words, in which contexts, how often,
-      and how that changes. Annotation does the other half of the work: it applies your own
-      codebook to each text, by hand or with an AI model that you check like any new coder.
+      researchers who work with text. Its text analytics tools measure patterns across a whole
+      corpus: which words, in which contexts, how often, and how that changes. The Annotation
+      tool brings generative AI into the same workflow: it codes each text against your own
+      codebook, and shows how far the AI agrees with you before you rely on it.
     </p>
     <p class="pull">Stack tools differently along the flow of text, and you've built a workflow. That's Wordflow.</p>
 
@@ -625,24 +616,23 @@
       </div>
 
       <div class="suite-half suite-annot">
-        <span class="suite-eyebrow">Annotation <span class="suite-new">New in 0.7</span></span>
-        <h4>Your codebook, on every text</h4>
-        <p class="suite-intro">Qualitative coding at corpus scale. Your coding process stays the same; AI joins it as a new coder that is checked before it codes at scale.</p>
-        <ol class="steps">
-          <li><strong>Write the codebook.</strong> Codes and their descriptions, kept as a table. The AI Code Designer can draft a first version from a short brief and a sample of your texts, for you to edit.</li>
-          <li><strong>Code a sample.</strong> By hand, or with an AI model: a commercial one, your institution's service, or a model running on your own computer.</li>
-          <li><strong>Check the agreement.</strong> Percent agreement, Cohen's kappa or Krippendorff's alpha against your own coding, with a confusion matrix. Your corrections become examples for the next round.</li>
-          <li><strong>Scale up.</strong> When the agreement is good enough for your study, code the whole corpus. The prompt, model, settings and codebook are saved with the Project.</li>
-        </ol>
+        <span class="suite-eyebrow">Annotation <span class="suite-new">Generative AI</span></span>
+        <h4>Qualitative coding, at corpus scale</h4>
+        <ul class="tool-list">
+          <li><strong>Manual or AI coding</strong> Code by hand, or have an AI model apply your codebook to every text.</li>
+          <li><strong>AI Code Designer</strong> Drafts a first codebook from a short brief and a sample of your texts, for you to edit.</li>
+          <li><strong>Intercoder reliability</strong> Percent agreement, Cohen's kappa or Krippendorff's alpha against your own coding, with a confusion matrix.</li>
+          <li><strong>Corrections as examples</strong> Fix the AI's mistakes, and your corrections guide its next round.</li>
+          <li><strong>Your choice of model</strong> A commercial model, your institution's service, or one running on your own computer.</li>
+        </ul>
       </div>
     </div>
 
     <div class="suite-thread">
-      <strong>One Project joins them.</strong>
-      Join, filter and preprocess your data, and every result, codes included, becomes a Data
-      Block the next tool can use: filter texts by code, then follow each code over time in
-      Trends. The Project graph records every step, and the whole Project downloads as one
-      file that opens wherever Wordflow runs.
+      <strong>All tools work together.</strong>
+      Every result, codes included, becomes a Data Block the next tool can use: filter texts by
+      code, then follow each code over time in Trends. The Project graph records every step,
+      and the whole Project downloads as one file that opens wherever Wordflow runs.
     </div>
   </div>
 </section>
